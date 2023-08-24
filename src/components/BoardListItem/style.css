@@ -16,6 +16,91 @@
     gap: 16px;
 }
 
+.board-list-item-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.board-list-item-profile-box {
+    width: 32px;
+    height: 32px;
+}
+
+.board-list-item-profile-image {
+    border-radius: 50% 50%;
+
+    width: 100%;
+    height: 100%;
+
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+
+.board-list-item-write-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.board-list-item-nickname {
+    color: rgba(0, 0, 0, 0.7);
+    
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.board-list-item-write-date {
+    color: rgba(0, 0, 0, 0.4);
+
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 140%;
+}
+
+.board-list-item-image {
+    border-radius: 10px 10px;
+    width: 100%;
+    height: 100%;
+    
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+
+.board-list-item-middle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.board-list-item-title {
+    /* display: block;
+
+    width: 563px;
+    height: 22px;
+
+    overflow: hidden;            overflow되면 숨긴다
+    text-overflow: ellipsis;     텍스트가 오버플로우 되면 어떻게 할거냐? ellipsis = ... 표현 
+    white-space: nowrap;        글자가 쌓이고 있다 
+    위의 3개 사용하려면 width, height 고정이 되어 있어야함 */
+
+
+    color: rgba(0, 0, 0, 1);
+
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.board-list-item-contents {
+    color: rgba(0, 0, 0, 0.7);
+
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 140%;
+}
+
 .board-list-item-counts {
     color: rgba(0, 0, 0, 0.7);
 
@@ -28,5 +113,4 @@
     width: 152px;
     height: 152px;
 
-    background-color: rgba(0, 0, 0, 0.2);
 }
