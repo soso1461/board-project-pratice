@@ -28,14 +28,14 @@ const top3ListMock: BoardItem[] = [
     {
         boardNumber: 3,
         title: '안녕하세요',
-        contents: '안녕하세요 말입니다.',
-        imageUrl: null,
+        contents: '안녕하세요 원숭이입니다.',
+        imageUrl: 'https://pds.joongang.co.kr//news/component/htmlphoto_mmdata/201709/20/0f96ec84-ce76-4e7e-9612-b4f61a984a76.jpg',
         viewCount: 0,
         commentCount: 0,
         favoriteCount: 0,
         writeDatetime: '2023. 08 .24',
-        nickname: '깃허브',
-        profileImageUrl: null,
+        nickname: '원숭이',
+        profileImageUrl: 'https://newsimg-hams.hankookilbo.com/2022/03/31/71f341a2-0b9d-4fbd-81e4-0d706e714767.jpg',
     },
 ];
 
