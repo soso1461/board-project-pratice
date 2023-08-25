@@ -10,7 +10,7 @@ const top3ListMock: BoardItem[] = [
         commentCount: 0,
         favoriteCount: 0,
         writeDatetime: '2023. 08 .24',
-        nickname: '깃허브',
+        nickname: '고양이',
         profileImageUrl: 'http://www.chemicalnews.co.kr/news/photo/202106/3636_10174_4958.jpg',
     },
     {
