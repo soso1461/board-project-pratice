@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
-import BoardListItem from 'components/BoardListItem';
-import { currentBoardListMock } from 'mocks';
+import { top3ListMock } from 'mocks';
+import Top3ListItem from 'components/Top3ListItem';
 
 function App() {
   return (
-    <>
-      {currentBoardListMock.map((item) => (<BoardListItem boardItem={item} />))}
-    </>
+    <div style={{ width: '1200px', display: 'flex', justifyContent: 'space-between', gap: '24px' }}>
+      { top3ListMock.map((boardItem) => (<Top3ListItem boardItem={boardItem} />)) }
+    </div>
   );
 }
 

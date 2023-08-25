@@ -1,8 +1,14 @@
 import React from 'react';
 import './style.css';
 
-export default function index() {
+//          component: 댓글 리스트 아이템 컴포넌트          //
+export default function CommentListItem() {
+
+
+  //            render: 댓글 리스트 아이템 컴포넌트 렌더링          //
   return (
-    <div>index</div>
+    <div className=''>
+      
+    </div>
   )
 }
