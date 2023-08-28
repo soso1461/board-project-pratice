@@ -4,21 +4,25 @@ import { commentListMock, top3ListMock } from 'mocks';
 import Top3ListItem from 'components/Top3ListItem';
 import CommentListItem from 'components/CommentListItem';
 import Footer from 'layouts/Footer';
+import { useLocation } from 'react-router-dom';
 
 function App() {
+
+  const { pathname } = useLocation();
+
   return (
     <div>
       <div style={{ width: '1500px', display: 'flex', justifyContent: 'space-between', gap: '24px' }}>
         {top3ListMock.map((boardItem) => (<Top3ListItem boardItem={boardItem} />))}
       </div>
-      <br /><br /><br /><br /><br /><br /><br /><br />
+      <br /><br /><br /><br /><br /><br />
       <div style= {{ display: 'flex', flexDirection: 'column', gap: '30px'}}>
         {commentListMock.map((commentItem) => (<CommentListItem commentItem={commentItem} />))}
       </div>
-      <br /><br /><br /><br /><br /><br /><br /><br />
-      <div>
-        <Footer />
-      </div>
+      <br /><br /><br /><br /><br /><br />
+      <>
+        {pathname !== '/auth' && <Footer />}
+      </>
     </div>
   );
 }
