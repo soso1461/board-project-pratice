@@ -14,7 +14,6 @@ export default function Footer() {
     window.open('https://blog.naver.com');  // open은 새창으로 열리고 location.href는 현재창으로 열림
   }
   
-
   //          render: 푸터 컴포넌트 렌더링          //
   return (
     <div id='footer'>
