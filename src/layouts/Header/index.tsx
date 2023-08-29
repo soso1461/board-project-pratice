@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from 'react'
 import './style.css'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { AUTH_PATH, MAIN_PATH, BOARD_WRITE_PATH, SEARCH_PATH, BOARD_DETAIL_PATH, USER_PATH, BOARD_UPDATE_PATH } from 'constant';
 
 //          component: 헤더 컴포넌트          //
 export default function Header() {
@@ -9,19 +10,19 @@ export default function Header() {
   const { pathname } = useLocation();
 
   //          variable: 인증 페이지 논리 변수         //
-  const isAuthPage = pathname === '/auth';
+  const isAuthPage = pathname === AUTH_PATH;
   //          variable: 메인 페이지 논리 변수         //
-  const isMainPage = pathname === '/';
+  const isMainPage = pathname === MAIN_PATH;
   //          variable: 검색 페이지 논리 변수         //
-  const isSearchPage = pathname === '/search';
+  const isSearchPage = pathname.startsWith(SEARCH_PATH(''));
   //          variable: 게시물 상세 페이지 논리 변수         //
-  const isBoardDetailPage = pathname === '/board/detail';
+  const isBoardDetailPage = pathname.startsWith(BOARD_DETAIL_PATH(''));
   //          variable: 유저 페이지 논리 변수         //
-  const isUserPage = pathname === '/user';
+  const isUserPage = pathname.startsWith(USER_PATH(''));
   //          variable: 게시물 작성 페이지 논리 변수         //
-  const isBoardWritePage = pathname === '/board/write';
+  const isBoardWritePage = pathname === BOARD_WRITE_PATH;
   //          variable: 게시물 수정 페이지 논리 변수         //
-  const isBoardUpdatePage = pathname === '/board/update';
+  const isBoardUpdatePage = pathname.startsWith(BOARD_UPDATE_PATH(''));
 
   //          function: 네비게이트 함수           //
   const navigator = useNavigate();
