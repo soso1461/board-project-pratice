@@ -52,10 +52,13 @@ export default function Header() {
 
     //           event handler: 검색 버튼 클릭 이벤트 처리         //
     const onSearchButtonClickHandler = () => {
+      if (showInput) {
+        
+      }
       setShowInput(!showInput);
     }
 
-    //          render: 검색 컴포넌트 렌더링          //
+    //          render: 검색 컴포넌트 렌더링 (인풋 보임 상태일 때)          //
     if (showInput)
       return (
         <div className='header-search-input-box'>
@@ -65,6 +68,7 @@ export default function Header() {
           </div>
         </div>
       );
+    //          render: 검색 컴포넌트 렌더링 (인풋이 보임 상태가 아닐 때)          //
     return (
       <div className='icon-button' onClick={onSearchButtonClickHandler}>
         <div className='search-icon'></div>
@@ -74,11 +78,12 @@ export default function Header() {
 //          component: 로그인 상태에 따라 로그인 혹은 마이페이지 버튼 컴포넌트          //
   const LoginMyPageButton = () => {
     
+    //          render: 마이페이지 버튼 컴포넌트 렌더링 (로그인 상태일 때)          //
     if (cookies.email)
       return (
         <div className='mypage-button'>마이페이지</div>
       )
-    
+    //          render: 로그인 버튼 컴포넌트 렌더링 (로그인 상태가 아닐 때)          //
       return (
         <div className='login-button'>로그인</div>
       )
@@ -103,8 +108,8 @@ export default function Header() {
         <div className='header-right-box'>
           {isAuthPage && (<Search />)}
           {isMainPage && (<> <Search /> <LoginMyPageButton /> </>)}
-          {isSearchPage && (<></>)}
-          {isBoardDetailPage && (<></>)}
+          {isSearchPage && (<> <Search /> <LoginMyPageButton /> </>)}
+          {isBoardDetailPage && (<> <Search /> <LoginMyPageButton /> </>)}
           {isUserPage && (<></>)}
           {isBoardWritePage && (<></>)}
           {isBoardUpdatePage && (<></>)}
