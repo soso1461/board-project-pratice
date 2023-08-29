@@ -1,13 +1,16 @@
-import React, { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState, useEffect } from 'react'
 import './style.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AUTH_PATH, MAIN_PATH, BOARD_WRITE_PATH, SEARCH_PATH, BOARD_DETAIL_PATH, USER_PATH, BOARD_UPDATE_PATH } from 'constant';
+import { useCookies } from 'react-cookie';
 
 //          component: 헤더 컴포넌트          //
 export default function Header() {
 
   //          state: path name 상태         //
   const { pathname } = useLocation();
+  //          state: cookie 상태         //
+  const [cookies, setCookies] = useCookies();
 
   //          variable: 인증 페이지 논리 변수         //
   const isAuthPage = pathname === AUTH_PATH;
@@ -54,20 +57,38 @@ export default function Header() {
 
     //          render: 검색 컴포넌트 렌더링          //
     if (showInput)
-    return (
-      <div className='header-search-input-box'>
-        <input className='header-search-input' type='text' value={searchValue} onChange={onSearchValueChangeHandler} />
-        <div className='icon-button' onClick={onSearchButtonClickHandler}>
-          <div className='search-icon'></div>
+      return (
+        <div className='header-search-input-box'>
+          <input className='header-search-input' type='text' value={searchValue} onChange={onSearchValueChangeHandler} />
+          <div className='icon-button' onClick={onSearchButtonClickHandler}>
+            <div className='search-icon'></div>
+          </div>
         </div>
-      </div>
-    );
+      );
     return (
       <div className='icon-button' onClick={onSearchButtonClickHandler}>
-          <div className='search-icon'></div>
-        </div>
-    );  
+        <div className='search-icon'></div>
+      </div>
+    );
+  };
+//          component: 로그인 상태에 따라 로그인 혹은 마이페이지 버튼 컴포넌트          //
+  const LoginMyPageButton = () => {
+    
+    if (cookies.email)
+      return (
+        <div className='mypage-button'>마이페이지</div>
+      )
+    
+      return (
+        <div className='login-button'>로그인</div>
+      )
   }
+
+  //          effect: 마운트시에만 실행될 함수          //
+  useEffect(() => {
+    // setCookies('email', 'email@email.com', { path: '/', expires: new Date() }); // 오늘 날짜 기준으로 쿠키 기록을 지움
+    setCookies('email', 'email@email.com', { path: '/' });
+   }, []);
 
   //          render: 헤더 컴포넌트 렌더링          //
   return (
@@ -81,7 +102,7 @@ export default function Header() {
         </div>
         <div className='header-right-box'>
           {isAuthPage && (<Search />)}
-          {isMainPage && (<></>)}
+          {isMainPage && (<> <Search /> <LoginMyPageButton /> </>)}
           {isSearchPage && (<></>)}
           {isBoardDetailPage && (<></>)}
           {isUserPage && (<></>)}
