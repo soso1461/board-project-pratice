@@ -3,7 +3,7 @@ import './style.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AUTH_PATH, MAIN_PATH, BOARD_WRITE_PATH, SEARCH_PATH, BOARD_DETAIL_PATH, USER_PATH, BOARD_UPDATE_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
-import { useUserStore } from 'stores';
+import { useBoardStore, useUserStore } from 'stores';
 import { LoginUser } from 'types';
 
 //          component: 헤더 컴포넌트          //
@@ -115,6 +115,17 @@ export default function Header() {
       )
   }
 
+  //          component: 업로드 버튼 컴포넌트         //
+  const UploadButton = () => { 
+
+    const { title, contents, image } = useBoardStore();
+
+    if (title && contents)
+    return (<div className='upload-button'>업로드</div>);
+    // else
+    return (<div className='upload-button-disable'>업로드</div>);
+  }
+
   //          effect: 마운트시에만 실행될 함수          //
   useEffect(() => {
     // setCookies('email', 'email@email.com', { path: '/', expires: new Date() }); // 오늘 날짜 기준으로 쿠키 기록을 지움
@@ -138,9 +149,9 @@ export default function Header() {
           {isMainPage && (<> <Search /> <LoginMyPageButton /> </>)}
           {isSearchPage && (<> <Search /> <LoginMyPageButton /> </>)}
           {isBoardDetailPage && (<> <Search /> <LoginMyPageButton /> </>)}
-          {isUserPage && (<></>)}
-          {isBoardWritePage && (<></>)}
-          {isBoardUpdatePage && (<></>)}
+          {isUserPage && (<></>)} 
+          {isBoardWritePage && (<UploadButton />)}
+          {isBoardUpdatePage && (<UploadButton />)}
         </div>
       </div>
     </div>

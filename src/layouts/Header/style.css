@@ -132,3 +132,47 @@
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.8);
 }
+
+.upload-button {
+    border-radius: 46px;
+    width: 95px;
+    height: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 1);
+
+    color: rgba(255, 255, 255, 1);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.upload-button:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.upload-button-disable {
+    border-radius: 46px;
+    width: 95px;
+    height: 30px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: rgba(0, 0, 0, 0.4);
+    
+    color: rgb(82, 54, 54);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+    
+}
+
+.upload-button-disable:hover {
+    cursor: default;
+}
