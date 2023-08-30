@@ -1,8 +1,8 @@
 import React from 'react'
 import './style.css'
 
-export default function index() {
+export default function Main() {
   return (
-    <div>index</div>
+    <div>Main</div>
   )
 }

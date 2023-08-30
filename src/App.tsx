@@ -4,8 +4,17 @@ import { commentListMock, top3ListMock } from 'mocks';
 import Top3ListItem from 'components/Top3ListItem';
 import CommentListItem from 'components/CommentListItem';
 import Footer from 'layouts/Footer';
-import { useLocation } from 'react-router-dom';
+import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import Header from 'layouts/Header';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
+import Authentication from 'views/Authentication';
+import Main from 'views/Main';
+import Search from 'views/Search';
+import BoardDetail from 'views/Board/Detail';
+import BoardUpdate from 'views/Board/Update';
+import BoardWrite from 'views/Board/Write';
+import User from 'views/User';
+import Container from 'layouts/Container';
 
 function App() {
 
@@ -25,7 +34,17 @@ function App() {
       </div>
       <br /><br /><br /><br /><br /><br />
       <>
-        {pathname !== '/auth' && <Footer />}
+        <Routes>
+          <Route element={<Container />}>
+            <Route path={MAIN_PATH} element={<Main />} />
+            <Route path={AUTH_PATH} element={<Authentication />} />
+            <Route path={SEARCH_PATH(':word')} element={<Search />} />
+            <Route path={BOARD_WRITE_PATH} element={<BoardWrite />} />
+            <Route path={BOARD_DETAIL_PATH(':boardNumber')} element={<BoardDetail />} />
+            <Route path={BOARD_UPDATE_PATH(':boardNumber')} element={<BoardUpdate />} />
+            <Route path={USER_PATH(':email')} element={<User />} />
+          </Route>
+        </Routes>
       </>
     </div>
   );

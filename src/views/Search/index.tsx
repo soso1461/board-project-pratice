@@ -1,7 +1,7 @@
 import React from 'react'
 import './style.css'
 
-export default function search() {
+export default function Search() {
   return (
     <div>search</div>
   )
