@@ -8,6 +8,8 @@ interface BoardStore {
     setTitle: (title: string) => void;
     setContents: (contents: string) => void;
     setImage: (image: File | null) => void;
+
+    resetBoard: () => void;
 }
 
 const useBoardStore = create<BoardStore>((set) => ({
@@ -17,7 +19,9 @@ const useBoardStore = create<BoardStore>((set) => ({
     
     setTitle: (title: string) => { set((state) => ({ ...state, title })) },
     setContents: (contents: string) => { set((state) => ({ ...state, contents })) },
-    setImage: (image: File | null) => { set((state) => ({ ...state, image })) }
+    setImage: (image: File | null) => { set((state) => ({ ...state, image })) },
+
+    resetBoard: () => { set((state) => ({ title: '', contents: '', image: null }))}
 }));
 
 export default useBoardStore;
