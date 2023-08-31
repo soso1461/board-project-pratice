@@ -151,14 +151,14 @@ export default function Header() {
     const isMyPage = user && user.email === email;
     
     //          event handler: 로그아웃 버튼 클릭 이벤트 처리          //
-    const onLogoutButtonCLcikHandler = () => {
+    const onLogoutButtonClickHandler = () => {
       setCookies('email', '', { path: '/', expires: new Date() });
       setUser(null);
     }
     
     //          render: 본인 페이지일 때 버튼 컴포넌트 렌더링         //
     if (isMyPage)
-    return (<div className='logout-button' onClick={onLogoutButtonCLcikHandler}>로그아웃</div>);
+    return (<div className='logout-button' onClick={onLogoutButtonClickHandler}>로그아웃</div>);
     //          render: 타인 페이지일 때 버튼 컴포넌트 렌더링         //
     return (<LoginMyPageButton />);
   }
@@ -166,9 +166,13 @@ export default function Header() {
   //          effect: 마운트시에만 실행될 함수          //
   useEffect(() => {
     // setCookies('email', 'email@email.com', { path: '/', expires: new Date() }); // 오늘 날짜 기준으로 쿠키 기록을 지움
-    setCookies('email', 'email@email.com', { path: '/' });
-    const user: LoginUser = { email: 'email@email.com', nickname: '주코야키', profileImage: '' };
-    setUser(user);
+    // setCookies('email', 'email@email.com', { path: '/' });
+    // const user: LoginUser = { email: 'email@email.com', nickname: '주코야키', profileImage: '' };
+    // setUser(user);
+    if (cookies.email) {
+      const user: LoginUser = { email: cookies.email, nickname: '주코야키', profileImage: null }
+      setUser(user);
+    }
    }, []);
 
   //          render: 헤더 컴포넌트 렌더링          //
