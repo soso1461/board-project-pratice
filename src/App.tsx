@@ -21,19 +21,19 @@ function App() {
   const { pathname } = useLocation();
 
   return (
-    <div>
-      <div>
-        <Header />
-      </div>
-      <div style={{ width: '1500px', display: 'flex', justifyContent: 'space-between', gap: '24px' }}>
-        {top3ListMock.map((boardItem) => (<Top3ListItem boardItem={boardItem} />))}
-      </div>
-      <br /><br /><br /><br /><br /><br />
-      <div style= {{ display: 'flex', flexDirection: 'column', gap: '30px'}}>
-        {commentListMock.map((commentItem) => (<CommentListItem commentItem={commentItem} />))}
-      </div>
-      <br /><br /><br /><br /><br /><br />
-      <>
+    // <div>
+    //   <div>
+    //     <Header />
+    //   </div>
+    //   <div style={{ width: '1500px', display: 'flex', justifyContent: 'space-between', gap: '24px' }}>
+    //     {top3ListMock.map((boardItem) => (<Top3ListItem boardItem={boardItem} />))}
+    //   </div>
+    //   <br /><br /><br /><br /><br /><br />
+    //   <div style= {{ display: 'flex', flexDirection: 'column', gap: '30px'}}>
+    //     {commentListMock.map((commentItem) => (<CommentListItem commentItem={commentItem} />))}
+    //   </div>
+    //   <br /><br /><br /><br /><br /><br />
+    //   <>
         <Routes>
           <Route element={<Container />}>
             <Route path={MAIN_PATH} element={<Main />} />
@@ -43,10 +43,11 @@ function App() {
             <Route path={BOARD_DETAIL_PATH(':boardNumber')} element={<BoardDetail />} />
             <Route path={BOARD_UPDATE_PATH(':boardNumber')} element={<BoardUpdate />} />
             <Route path={USER_PATH(':email')} element={<User />} />
+            <Route path='*' element={<h1>404 Not Found</h1>} />
           </Route>
         </Routes>
-      </>
-    </div>
+      // </>
+    // </div>
   );
 }
 
