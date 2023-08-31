@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { KeyboardEvent, useState } from 'react'
 import './style.css'
 import InputBox from 'components/InputBox'
 import { useCookies } from 'react-cookie';
@@ -33,8 +33,14 @@ export default function Authentication() {
     const [passwordType, setPasswordType] = useState<'text' | 'password'>('password');
     //          state: 비밀번호 인풋 버튼 아이콘 상태         //
     const [passwordIcon, setPasswordIcon] = useState<'eye-off-icon' | 'eye-on-icon'>('eye-off-icon');
-    //          state: 비밀번호 로그인 에러 상태         //
+    //          state: 로그인 에러 상태         //
     const [error, setError] = useState<boolean>(false);
+
+    //          event handler: 비밀번호 인풋 key down 이벤트 처리         //
+    const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key !== 'Enter') return;
+      onSignInButtonClickHandler();
+    }
   
     //          event handler: 비밀번호 인풋 버튼 클릭 이벤트 처리          //
     const onPasswordIconClickHandler = () => {
@@ -76,7 +82,7 @@ export default function Authentication() {
             <div className='auth-card-title'>{'로그인'}</div>
           </div>
           <InputBox label='이메일 주소' type='text' placeholder='이메일 주소를 입력해주세요.' error={error} value={email} setValue={setEmail} />
-          <InputBox label='비밀번호' type={passwordType} placeholder='비밀번호를 입력해주세요.' error={error} value={password} setValue={setPassword} icon={passwordIcon} onButtonClick={onPasswordIconClickHandler} />
+          <InputBox label='비밀번호' type={passwordType} placeholder='비밀번호를 입력해주세요.' error={error} value={password} setValue={setPassword} icon={passwordIcon} onKeyDown={onPasswordKeyDownHandler} onButtonClick={onPasswordIconClickHandler} />
         </div>
         <div className='auth-card-bottom'>
           {error && (
