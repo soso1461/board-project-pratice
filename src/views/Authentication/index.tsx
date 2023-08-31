@@ -1,20 +1,26 @@
 import React, { useState } from 'react'
 import './style.css'
 import InputBox from 'components/InputBox'
+import { useCookies } from 'react-cookie';
+import { useUserStore } from 'stores';
 
 //          component: 인증 페이지          //
 export default function Authentication() {
+
+  const { user, setUser } = useUserStore();
+  const [cookies, setCookies] = useCookies();
   //            state: 화면 상태          //
   const [view, setView] = useState<'sign-in' | 'sign-up'>('sign-in');   // 기본값 sign-in
 
   const SignInCard = () => {
     const [email, setEmail] = useState<string>('');   // ('')은 초기값을 뜻함
-    const [emailError, setEmailError] = useState<boolean>(false);
+    // const [emailError, setEmailError] = useState<boolean>(false);
     const [password, setPassword] = useState<string>('');
-    const [passwordError, setPasswordError] = useState<boolean>(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('비밀번호는 8자 이상 입력해주세요.');
+    // const [passwordError, setPasswordError] = useState<boolean>(false);
+    // const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('비밀번호는 8자 이상 입력해주세요.');
     const [passwordType, setPasswordType] = useState<'text' | 'password'>('password');
     const [passwordIcon, setPasswordIcon] = useState<'eye-off-icon' | 'eye-on-icon'>('eye-off-icon');
+    const [error, setError] = useState<boolean>(false);
   
     const onPasswordIconClickHandler = () => {
       if (passwordType === 'text') {
@@ -26,24 +32,36 @@ export default function Authentication() {
         setPasswordIcon('eye-on-icon');
       }
     }
+
+    const onSignInButtonClickHandler = () => {
+      // TODO: 로그인 처리
+      alert('로그인 버튼 클릭!');
+    }
+
+    const onSignUpLinkClickHandler = () => {
+      setView('sign-up');
+    }
+
     return (
       <div className='auth-card'>
         <div className='auth-card-top'>
           <div className='auth-card-title-box'>
             <div className='auth-card-title'>{'로그인'}</div>
           </div>
-          <InputBox label='이메일 주소' type='text' placeholder='이메일 주소를 입력해주세요.' error={emailError} value={email} setValue={setEmail} />
-          <InputBox label='비밀번호' type={passwordType} placeholder='비밀번호를 입력해주세요.' error={passwordError} errorMessage={passwordErrorMessage} value={password} setValue={setPassword} icon={passwordIcon} onButtonClick={onPasswordIconClickHandler} />
+          <InputBox label='이메일 주소' type='text' placeholder='이메일 주소를 입력해주세요.' error={error} value={email} setValue={setEmail} />
+          <InputBox label='비밀번호' type={passwordType} placeholder='비밀번호를 입력해주세요.' error={error} value={password} setValue={setPassword} icon={passwordIcon} onButtonClick={onPasswordIconClickHandler} />
         </div>
         <div className='auth-card-botttom'>
-          <div className='auth-sign-in-error-box'>
-            <div className='auth-sign-in-error-message'>
-              {'이메일 주소 또는 비밀번호를 잘못 입력했습니다.\n입력하신 내용을 다시 확인해주세요.'}
+          {error && (
+            <div className='auth-sign-in-error-box'>
+              <div className='auth-sign-in-error-message'>
+                {'이메일 주소 또는 비밀번호를 잘못 입력했습니다.\n입력하신 내용을 다시 확인해주세요.'}
+              </div>
             </div>
-          </div>
-          <div className='auth-button'>{'로그인'}</div>
+          )}
+          <div className='auth-button' onClick={onSignInButtonClickHandler}>{'로그인'}</div>
           <div className='auth-description-box'>
-            <div className='auth-description'>{'신규 사용자이신가요? '}<span className='description-emphasis'>{'회원가입'}</span></div>
+            <div className='auth-description'>{'신규 사용자이신가요? '}<span className='description-emphasis' onClick={onSignUpLinkClickHandler}>{'회원가입'}</span></div>
           </div>
         </div>
       </div>
@@ -68,7 +86,7 @@ export default function Authentication() {
           </div>
         </div>
         {view === 'sign-in' && <SignInCard />}
-        {view === 'sign-in' && <SignUpCard />}
+        {view === 'sign-up' && <SignUpCard />}
         {/* <div className='auth-card'></div> */}
       </div>
     </div>
