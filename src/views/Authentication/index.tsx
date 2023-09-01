@@ -115,7 +115,7 @@ export default function Authentication() {
   const SignUpCard = () => {
 
     //          state: 페이지 번호 상태            //
-    const [page, setPage] = useState<1 | 2>(1);
+    const [page, setPage] = useState<1 | 2>(2);
     
     //          state: 이메일 상태            //
     const [email, setEmail] = useState<string>('');
@@ -145,6 +145,30 @@ export default function Authentication() {
     //          state: 비밀번호 확인 에러 메세지 상태            //
     const [passwordCheckErrorMessage, setPasswordCheckErrorMessage] = useState<string>('');
 
+    //          state: 닉네임 상태            //
+    const [nickname, setNickname] = useState<string>('');
+    //          state: 닉네임 에러 상태            //
+    const [nicknameError, setNicknameError] = useState<boolean>(false);
+    //          state: 닉네임 에러 메세지 상태            //
+    const [nicknameErrorMessage, nicknameSetErrorMessage] = useState<string>('');
+
+    //          state: 핸드폰 번호 상태            //
+    const [telNumber, setTelnumber] = useState<string>('');
+    //          state: 핸드폰 번호 에러 상태            //
+    const [telNumberError, setTelnumberError] = useState<boolean>(false);
+    //          state: 핸드폰 번호 에러 메세지 상태            //
+    const [telNumberErrorMessage, setTelnumberErrorMessage] = useState<string>('');
+
+    //          state: 주소 상태            //
+    const [address, setAddress] = useState<string>('');
+    //          state: 주소 에러 상태            //
+    const [addressError, setAddressError] = useState<boolean>(false);
+    //          state: 주소 에러 메세지 상태            //
+    const [addressErrorMessage, setAddressErrorMessage] = useState<string>('');
+
+    //          state: 상세 주소 상태            //
+    const [addressDetail, setAddressDetail] = useState<string>('');
+    
     //          event handler: 비밀번호 아이콘 클릭 이벤트 처리            //
     const onPasswordIconClickHandler = () => {
       if (passwordType === 'password') {
@@ -167,9 +191,13 @@ export default function Authentication() {
         setPasswordCheckIcon('eye-on-icon');
       }
     }
+    //          event handler: 주소 아이콘 클릭 이벤트 처리            //
+    const onAddressIconClickHander = () => {
+
+    }
     //          event handler: 다음 단계 버튼 클릭 이벤트 처리            //
     const onNextStepButtonClickHandler = () => {
-
+      
       setEmailError(false);
       setEmailErrorMessage('');     // 이메일 포맷이 맞지 않다는 오류 출력 후 다시 제대로 입력하면 오류가 지워지게 처리
       setPasswordError(false);
@@ -211,12 +239,25 @@ export default function Authentication() {
             <div className='auth-card-title'>{'회원가입'}</div>
             <div className='auth-card-title-page'>{`${page}/2`}</div>
           </div>
+          {page === 1 && (<>
           <InputBox label='이메일 주소*' type='text' placeholder='이메일 주소를 입력해주세요.' value={email} setValue={setEmail} error={emailError} errorMessage={emailErrorMessage} />
           <InputBox label='비밀번호*' type={passwordType} placeholder='비밀번호를 입력해주세요.' value={password} setValue={setPassword} icon={passwordIcon} error={passwordError} errorMessage={passwordErrorMessage} onButtonClick={onPasswordIconClickHandler}/>
           <InputBox label='비밀번호 확인*' type={passwordCheckType} placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} setValue={setPasswordCheck} icon={passwordCheckIcon} error={passwordCheckError} errorMessage={passwordCheckErrorMessage} onButtonClick={onPasswordCheckIconClickHander}/>
+          </>)}
+          {page === 2 && (<>
+          <InputBox label='닉네임*' type='text' placeholder='닉네임을 입력해주세요.' value={nickname} setValue={setNickname} error={nicknameError} errorMessage={nicknameErrorMessage} />
+          <InputBox label='핸드폰번호*' type='text' placeholder='핸드폰 번호를 입력해주세요.' value={telNumber} setValue={setTelnumber} error={telNumberError} errorMessage={telNumberErrorMessage} />
+          <InputBox label='주소*' type='text' placeholder='우편번호 찾기' value={address} setValue={setAddress} icon='right-arrow-icon' error={addressError} errorMessage={addressErrorMessage} onButtonClick={onAddressIconClickHander}/>
+          <InputBox label='상세 주소' type='text' placeholder='상세 주소를 입력해주세요.' value={addressDetail} setValue={setAddressDetail} error={false} />
+          </>)}
         </div>
         <div className='auth-card-bottom'>
+          {page === 1 && (
           <div className='auth-button' onClick={onNextStepButtonClickHandler}>{'다음 단계'}</div>
+          )}
+          {page === 2 && (<>
+            <div className='auth-button'>{'회원가입'}</div>
+          </>)}
           <div className='auth-description-box'>
             <div className='auth-description'>{'이미 계정이 있으신가요? '}<span className='description-emphasis'>{'로그인'}</span></div>
           </div>
