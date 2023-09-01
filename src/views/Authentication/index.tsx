@@ -7,6 +7,7 @@ import { loginInfoMock } from 'mocks';
 import { LoginUser } from 'types';
 import { useNavigate } from 'react-router-dom';
 import { MAIN_PATH } from 'constant';
+import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 
 //          component: 인증 페이지          //
 export default function Authentication() {
@@ -168,6 +169,9 @@ export default function Authentication() {
 
     //          state: 상세 주소 상태            //
     const [addressDetail, setAddressDetail] = useState<string>('');
+
+    //          function: 다음 주소 검색 팝업 오픈 함수         //
+    const open = useDaumPostcodePopup();
     
     //          event handler: 비밀번호 아이콘 클릭 이벤트 처리            //
     const onPasswordIconClickHandler = () => {
@@ -193,7 +197,7 @@ export default function Authentication() {
     }
     //          event handler: 주소 아이콘 클릭 이벤트 처리            //
     const onAddressIconClickHander = () => {
-
+      open({ onComplete });
     }
     //          event handler: 다음 단계 버튼 클릭 이벤트 처리            //
     const onNextStepButtonClickHandler = () => {
@@ -229,6 +233,12 @@ export default function Authentication() {
 
       if (checkedEmail || checkedPassword || checkedPasswordCheck) return;
       setPage(2);
+    }
+
+    //          event handler: 다음 주소 검색 완료 이벤트 처리          //
+    const onComplete = (data: Address) => {
+      const address = data.address;
+      setAddress(address);
     }
     
     //          render: sign up 카드 컴포넌트 렌더링          //
