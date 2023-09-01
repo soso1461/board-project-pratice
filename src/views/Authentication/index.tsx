@@ -113,7 +113,78 @@ export default function Authentication() {
   }
   //          component: sign up 카드 컴포넌트            //
   const SignUpCard = () => {
-    return (<></>);
+    
+    //          state: 이메일 상태            //
+    const [email, setEmail] = useState<string>('');
+    //          state: 이메일 에러 상태            //
+    const [emailError, setEmailError] = useState<boolean>(false);
+    //          state: 이메일 에러 메세지 상태            //
+    const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
+    //          state: 비밀번호 상태            //
+    const [password, setPassword] = useState<string>('');
+    //          state: 비밀번호 타입 상태            //
+    const [passwordType, setPasswordType] = useState<'text' | 'password'>('password');
+    //          state: 비밀번호 아이콘 상태            //
+    const [passwordIcon, setPasswordIcon] = useState<'eye-on-icon' | 'eye-off-icon'>('eye-off-icon');
+    //          state: 비밀번호 에러 상태            //
+    const [passwordError, setPasswordError] = useState<boolean>(false);
+    //          state: 비밀번호 에러 메세지 상태            //
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
+
+    //          state: 비밀번호 확인 상태            //
+    const [passwordCheck, setPasswordCheck] = useState<string>('');
+    //          state: 비밀번호 확인 타입 상태            //
+    const [passwordCheckType, setPasswordCheckType] = useState<'text' | 'password'>('password');
+    //          state: 비밀번호 확인 아이콘 상태            //
+    const [passwordCheckIcon, setPasswordCheckIcon] = useState<'eye-on-icon' | 'eye-off-icon'>('eye-off-icon');
+    //          state: 비밀번호 확인 에러 상태            //
+    const [passwordCheckError, setPasswordCheckError] = useState<boolean>(false);
+    //          state: 비밀번호 확인 에러 메세지 상태            //
+    const [passwordCheckErrorMessage, setPasswordCheckErrorMessage] = useState<string>('');
+
+    //          event handler: 비밀번호 아이콘 클릭 이벤트 처리            //
+    const onPasswordIconClickHandler = () => {
+      if (passwordType === 'password') {
+        setPasswordType('text');
+        setPasswordIcon('eye-on-icon');
+      }
+      if (passwordType === 'text') {
+        setPasswordType('password');
+        setPasswordIcon('eye-off-icon');
+      }
+    }
+    //          event handler: 비밀번호 확인 아이콘 클릭 이벤트 처리            //
+    const onPasswordCheckIconClickHander = () => {
+      if (passwordCheckType === 'text') {
+        setPasswordCheckType('password');
+        setPasswordCheckIcon('eye-off-icon');
+      }
+      if (passwordCheckType === 'password') {
+        setPasswordCheckType('text');
+        setPasswordCheckIcon('eye-on-icon');
+      }
+    }
+    
+    //          render: sign up 카드 컴포넌트 렌더링          //
+    return (
+      <div className='auth-card'>
+        <div className='auth-card-top'>
+          <div className='auth-card-title-box'>
+            <div className='auth-card-title'>{'회원가입'}</div>
+            <div className='auth-card-title-page'>{'1/2'}</div>
+          </div>
+          <InputBox label='이메일 주소*' type='text' placeholder='이메일 주소를 입력해주세요.' value={email} setValue={setEmail} error={emailError} errorMessage={emailErrorMessage} />
+          <InputBox label='비밀번호*' type={passwordType} placeholder='비밀번호를 입력해주세요.' value={password} setValue={setPassword} icon={passwordIcon} error={passwordError} errorMessage={passwordErrorMessage} onButtonClick={onPasswordIconClickHandler}/>
+          <InputBox label='비밀번호 확인*' type={passwordCheckType} placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} setValue={setPasswordCheck} icon={passwordCheckIcon} error={passwordCheckError} errorMessage={passwordCheckErrorMessage} onButtonClick={onPasswordCheckIconClickHander}/>
+        </div>
+        <div className='auth-card-bottom'>
+          <div className='auth-button'>{'다음 단계'}</div>
+          <div className='auth-description-box'>
+            <div className='auth-description'>{'이미 계정이 있으신가요? '}<span className='description-emphasis'>{'로그인'}</span></div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   //          render: 인증 페이지 렌더링          //
