@@ -169,6 +169,37 @@ export default function Authentication() {
     }
     //          event handler: 다음 단계 버튼 클릭 이벤트 처리            //
     const onNextStepButtonClickHandler = () => {
+
+      setEmailError(false);
+      setEmailErrorMessage('');     // 이메일 포맷이 맞지 않다는 오류 출력 후 다시 제대로 입력하면 오류가 지워지게 처리
+      setPasswordError(false);
+      setPasswordErrorMessage('');
+      setPasswordCheckError(false);
+      setPasswordCheckErrorMessage('');     // 비밀번호 8자리 미만 입력 후 오류가 뜬 뒤 다시 입력 하였을 때 오류가 지워지게 처리
+
+      // description: 이메일 패턴 확인 //
+      //email123@email123.co.kr
+      const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9]*\.[a-zA-z]{2,4})$/;
+      const checkedEmail = !emailPattern.test(email);
+      if (checkedEmail) {
+        setEmailError(true);
+        setEmailErrorMessage('이메일주소 포맷이 맞지 않습니다.')
+      }
+
+      // description: 비밀번호 길이 확인 //
+      const checkedPassword = password.trim().length < 8;
+      if (checkedPassword) {
+        setPasswordError(true);
+        setPasswordErrorMessage('비밀번호는 8자 이상 입력해주세요.');
+      }
+      // description: 비밀번호 일치 여부 확인 //
+      const checkedPasswordCheck = password !== passwordCheck;
+      if (checkedPasswordCheck) {
+        setPasswordCheckError(true);
+        setPasswordCheckErrorMessage('비밀번호가 일치하지 않습니다.');
+      }
+
+      if (checkedEmail || checkedPassword || checkedPasswordCheck) return;
       setPage(2);
     }
     
