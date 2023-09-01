@@ -2,7 +2,10 @@ import React, {
   ChangeEvent,
   Dispatch,
   KeyboardEvent,
+  MutableRefObject,
   SetStateAction,
+  forwardRef,
+  useRef,
 } from 'react';
 import './style.css';
 
@@ -21,7 +24,7 @@ interface Props {
 }
 
 //          component: Input 상자 컴포넌트          //
-export default function InputBox(props: Props) {
+const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
   //          state: Properties         //
   const { label, type, error, placeholder, value, icon, errorMessage } = props;
   const { setValue, onKeyDown, onButtonClick } = props;
@@ -41,10 +44,8 @@ export default function InputBox(props: Props) {
   return (
     <div className='inputbox'>
       <div className='inputbox-label'>{label}</div>
-      <div
-        className={error ? 'inputbox-container-error' : 'inputbox-container'}
-      >
-        <input className='input' type={type} placeholder={placeholder} value={value} onChange={onInputValueChangeHandler} onKeyDown={onKeyDownHandler} />
+      <div className={error ? 'inputbox-container-error' : 'inputbox-container'}>
+        <input ref={ref} className='input' type={type} placeholder={placeholder} value={value} onChange={onInputValueChangeHandler} onKeyDown={onKeyDownHandler} />
         {onButtonClick !== undefined && (
           <div className='icon-button' onClick={onButtonClick}>
             {icon !== undefined && <div className={icon}></div>}
@@ -54,4 +55,6 @@ export default function InputBox(props: Props) {
       <div className='inputbox-message'>{errorMessage}</div>
     </div>
   );
-}
+});
+
+export default InputBox;
