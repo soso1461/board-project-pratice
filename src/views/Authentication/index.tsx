@@ -113,6 +113,9 @@ export default function Authentication() {
   }
   //          component: sign up 카드 컴포넌트            //
   const SignUpCard = () => {
+
+    //          state: 페이지 번호 상태            //
+    const [page, setPage] = useState<1 | 2>(1);
     
     //          state: 이메일 상태            //
     const [email, setEmail] = useState<string>('');
@@ -164,6 +167,10 @@ export default function Authentication() {
         setPasswordCheckIcon('eye-on-icon');
       }
     }
+    //          event handler: 다음 단계 버튼 클릭 이벤트 처리            //
+    const onNextStepButtonClickHandler = () => {
+      setPage(2);
+    }
     
     //          render: sign up 카드 컴포넌트 렌더링          //
     return (
@@ -171,14 +178,14 @@ export default function Authentication() {
         <div className='auth-card-top'>
           <div className='auth-card-title-box'>
             <div className='auth-card-title'>{'회원가입'}</div>
-            <div className='auth-card-title-page'>{'1/2'}</div>
+            <div className='auth-card-title-page'>{`${page}/2`}</div>
           </div>
           <InputBox label='이메일 주소*' type='text' placeholder='이메일 주소를 입력해주세요.' value={email} setValue={setEmail} error={emailError} errorMessage={emailErrorMessage} />
           <InputBox label='비밀번호*' type={passwordType} placeholder='비밀번호를 입력해주세요.' value={password} setValue={setPassword} icon={passwordIcon} error={passwordError} errorMessage={passwordErrorMessage} onButtonClick={onPasswordIconClickHandler}/>
           <InputBox label='비밀번호 확인*' type={passwordCheckType} placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} setValue={setPasswordCheck} icon={passwordCheckIcon} error={passwordCheckError} errorMessage={passwordCheckErrorMessage} onButtonClick={onPasswordCheckIconClickHander}/>
         </div>
         <div className='auth-card-bottom'>
-          <div className='auth-button'>{'다음 단계'}</div>
+          <div className='auth-button' onClick={onNextStepButtonClickHandler}>{'다음 단계'}</div>
           <div className='auth-description-box'>
             <div className='auth-description'>{'이미 계정이 있으신가요? '}<span className='description-emphasis'>{'로그인'}</span></div>
           </div>
