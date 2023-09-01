@@ -151,14 +151,14 @@ export default function Authentication() {
     //          state: 닉네임 에러 상태            //
     const [nicknameError, setNicknameError] = useState<boolean>(false);
     //          state: 닉네임 에러 메세지 상태            //
-    const [nicknameErrorMessage, nicknameSetErrorMessage] = useState<string>('');
+    const [nicknameErrorMessage, setNicknameErrorMessage] = useState<string>('');
 
     //          state: 핸드폰 번호 상태            //
-    const [telNumber, setTelnumber] = useState<string>('');
+    const [telNumber, setTelNumber] = useState<string>('');
     //          state: 핸드폰 번호 에러 상태            //
-    const [telNumberError, setTelnumberError] = useState<boolean>(false);
+    const [telNumberError, setTelNumberError] = useState<boolean>(false);
     //          state: 핸드폰 번호 에러 메세지 상태            //
-    const [telNumberErrorMessage, setTelnumberErrorMessage] = useState<string>('');
+    const [telNumberErrorMessage, setTelNumberErrorMessage] = useState<string>('');
 
     //          state: 주소 상태            //
     const [address, setAddress] = useState<string>('');
@@ -199,6 +199,11 @@ export default function Authentication() {
     const onAddressIconClickHander = () => {
       open({ onComplete });
     }
+    //          event handler: 다음 주소 검색 완료 이벤트 처리          //
+    const onComplete = (data: Address) => {
+      const address = data.address;
+      setAddress(address);
+    }
     //          event handler: 다음 단계 버튼 클릭 이벤트 처리            //
     const onNextStepButtonClickHandler = () => {
       
@@ -211,7 +216,7 @@ export default function Authentication() {
 
       // description: 이메일 패턴 확인 //
       //email123@email123.co.kr
-      const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9]*\.[a-zA-z]{2,4})$/;
+      const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-z]{2,4}$/;
       const checkedEmail = !emailPattern.test(email);
       if (checkedEmail) {
         setEmailError(true);
@@ -235,10 +240,40 @@ export default function Authentication() {
       setPage(2);
     }
 
-    //          event handler: 다음 주소 검색 완료 이벤트 처리          //
-    const onComplete = (data: Address) => {
-      const address = data.address;
-      setAddress(address);
+    //          event handler: 회원가입 버튼 클릭 이벤트 처리           //
+    const onSignUpButtonClickHander = () => {
+      setNicknameError(false);
+      setNicknameErrorMessage('');
+      setTelNumberError(false);
+      setTelNumberErrorMessage('');
+      setAddressError(false);
+      setAddressErrorMessage('');
+
+      // description: 닉네임 입력 여부 확인 //
+      const checkedNickname = nickname.trim().length === 0;
+      if (checkedNickname) {
+        setNicknameError(true);
+        setNicknameErrorMessage('닉네임을 입력해주세요.');
+      }
+      // description: 핸드폰 번호 입력 여부 확인 //
+      const telNumberPattern = /^[0-9]{10,12}$/;
+      const checkedTelNumber = !telNumberPattern.test(telNumber);
+      if (checkedTelNumber) {
+        setTelNumberError(true);
+        setTelNumberErrorMessage('숫자만 입력해주세요.');
+      }
+      // description: 주소 입력 여부 확인 //
+      const checkedAddress = address.trim().length === 0;
+      if (checkedAddress) {
+        setAddressError(true);
+        setAddressErrorMessage('우편번호를 선택해주세요.');
+      }
+      
+      if (checkedNickname || checkedTelNumber || checkedAddress) return;
+
+      // TODO: 회원가입 처리 및 응답 처리
+
+      setView('sign-in');
     }
     
     //          render: sign up 카드 컴포넌트 렌더링          //
@@ -256,7 +291,7 @@ export default function Authentication() {
           </>)}
           {page === 2 && (<>
           <InputBox label='닉네임*' type='text' placeholder='닉네임을 입력해주세요.' value={nickname} setValue={setNickname} error={nicknameError} errorMessage={nicknameErrorMessage} />
-          <InputBox label='핸드폰번호*' type='text' placeholder='핸드폰 번호를 입력해주세요.' value={telNumber} setValue={setTelnumber} error={telNumberError} errorMessage={telNumberErrorMessage} />
+          <InputBox label='핸드폰번호*' type='text' placeholder='핸드폰 번호를 입력해주세요.' value={telNumber} setValue={setTelNumber} error={telNumberError} errorMessage={telNumberErrorMessage} />
           <InputBox label='주소*' type='text' placeholder='우편번호 찾기' value={address} setValue={setAddress} icon='right-arrow-icon' error={addressError} errorMessage={addressErrorMessage} onButtonClick={onAddressIconClickHander}/>
           <InputBox label='상세 주소' type='text' placeholder='상세 주소를 입력해주세요.' value={addressDetail} setValue={setAddressDetail} error={false} />
           </>)}
@@ -266,7 +301,7 @@ export default function Authentication() {
           <div className='auth-button' onClick={onNextStepButtonClickHandler}>{'다음 단계'}</div>
           )}
           {page === 2 && (<>
-            <div className='auth-button'>{'회원가입'}</div>
+            <div className='auth-button' onClick={onSignUpButtonClickHander}>{'회원가입'}</div>
           </>)}
           <div className='auth-description-box'>
             <div className='auth-description'>{'이미 계정이 있으신가요? '}<span className='description-emphasis'>{'로그인'}</span></div>
