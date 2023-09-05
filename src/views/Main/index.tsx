@@ -3,6 +3,8 @@ import './style.css'
 import { BoardItem } from 'types';
 import { popularWordListMock, top3ListMock } from 'mocks';
 import Top3ListItem from 'components/Top3ListItem';
+import { useNavigate } from 'react-router-dom';
+import { SEARCH_PATH } from 'constant';
 
 //          component: 메인 페이지          //
 export default function Main() {
@@ -41,9 +43,16 @@ export default function Main() {
     //          state: 인기 검색어 리스트 상태          //
     const [popularWordList, setPopularWordList] = useState<string[]>([]);
 
+    //          function: 네비게이트 함수         //
+    const navigator = useNavigate();
+    //          event handler: 인기 검색어 뱃지 클릭 이벤트 처리         //
+    const onWordBadgeClickHandler = (word: string) => {
+      navigator(SEARCH_PATH(word));
+    }
+
     //          effect: 컴포넌트 마운트 시 인기 검색어 리스트 불러오기          //
     useEffect(() => { 
-      // TODO: API 호출
+      // TODO: API 호출로 변경
       setPopularWordList(popularWordListMock);
     }, []);
 
@@ -59,7 +68,7 @@ export default function Main() {
                 <div className='main-bottom-popular-card-box'>
                   <div className='main-bottom-popular-card-title'>{'인기 검색어'}</div>
                   <div className='main-bottom-popular-card-contents'>
-                    {popularWordList.map(popularWord => <div className='word-badge'>{popularWord}</div>)}
+                    {popularWordList.map(popularWord => <div className='word-badge' onClick={() => onWordBadgeClickHandler(popularWord)}>{popularWord}</div>)}
                   </div>
                 </div>
               </div>
