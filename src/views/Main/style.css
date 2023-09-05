@@ -44,6 +44,7 @@
 
 .main-top-contents {
     width: 100%;
+    min-width: 1200px;
 
     display: flex;
     justify-content: space-between;
@@ -79,10 +80,11 @@
 
 .main-bottom-contents-box {
     width: 100%;
+    min-width: 1200px;
     display: grid;
     
     grid-template-columns: 8fr 4fr;
-    gap: 72px;
+    gap: 24px;
 }
 
 .main-bottom-latest-contents-box {

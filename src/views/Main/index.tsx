@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import './style.css'
 import { BoardItem } from 'types';
-import { popularWordListMock, top3ListMock } from 'mocks';
+import { currentBoardListMock, popularWordListMock, top3ListMock } from 'mocks';
 import Top3ListItem from 'components/Top3ListItem';
 import { useNavigate } from 'react-router-dom';
 import { SEARCH_PATH } from 'constant';
+import BoardListItem from 'components/BoardListItem';
 
 //          component: 메인 페이지          //
 export default function Main() {
@@ -42,6 +43,8 @@ export default function Main() {
 
     //          state: 인기 검색어 리스트 상태          //
     const [popularWordList, setPopularWordList] = useState<string[]>([]);
+    //          state: 최신 게시물 리스트 상태          //
+    const [latestBoardList, setLatestBoardList] = useState<BoardItem[]>([]);
 
     //          function: 네비게이트 함수         //
     const navigator = useNavigate();
@@ -54,6 +57,7 @@ export default function Main() {
     useEffect(() => { 
       // TODO: API 호출로 변경
       setPopularWordList(popularWordListMock);
+      setLatestBoardList(currentBoardListMock);
     }, []);
 
     //          render: 메인 하단 컴포넌트 렌더링          //
@@ -62,7 +66,9 @@ export default function Main() {
         <div className='main-bottom-container'>
           <div className='main-bottom-title'>{'최신 게시물'}</div>
           <div className='main-bottom-contents-box'>
-            <div className='main-bottom-latest-contents-box'></div>
+            <div className='main-bottom-latest-contents-box'>
+              {latestBoardList.map(boardItem => <BoardListItem boardItem={boardItem} />)}
+            </div>
             <div className='main-bottom-popular-word-box'>
               <div className='main-bottom-popular-word-card'>
                 <div className='main-bottom-popular-card-box'>
