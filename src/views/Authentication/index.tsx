@@ -169,6 +169,10 @@ export default function Authentication() {
 
     //          state: 상세 주소 상태            //
     const [addressDetail, setAddressDetail] = useState<string>('');
+    //          state: 개인정보동의 상태            //
+    const [consent, setConsent] = useState<boolean>(false);
+    //          state: 개인정보동의 에러 상태            //
+    const [consentError, setConsentError] = useState<boolean>(false);
 
     //          function: 다음 주소 검색 팝업 오픈 함수         //
     const open = useDaumPostcodePopup();
@@ -204,6 +208,11 @@ export default function Authentication() {
       const address = data.address;
       setAddress(address);
     }
+    //          event handler: 개인정보동의 체크 이벤트 처리            //
+    const onConsentCheckHandler = () => {
+      setConsent(!consent);
+    }
+    
     //          event handler: 다음 단계 버튼 클릭 이벤트 처리            //
     const onNextStepButtonClickHandler = () => {
       
@@ -248,6 +257,7 @@ export default function Authentication() {
       setTelNumberErrorMessage('');
       setAddressError(false);
       setAddressErrorMessage('');
+      setConsentError(false);
 
       // description: 닉네임 입력 여부 확인 //
       const checkedNickname = nickname.trim().length === 0;
@@ -268,8 +278,10 @@ export default function Authentication() {
         setAddressError(true);
         setAddressErrorMessage('우편번호를 선택해주세요.');
       }
-      
-      if (checkedNickname || checkedTelNumber || checkedAddress) return;
+      // description: 주소 입력 여부 확인 //
+      if (!consent) setConsentError(true);
+
+      if (checkedNickname || checkedTelNumber || checkedAddress || !consent) return;
 
       // TODO: 회원가입 처리 및 응답 처리
 
@@ -301,6 +313,13 @@ export default function Authentication() {
           <div className='auth-button' onClick={onNextStepButtonClickHandler}>{'다음 단계'}</div>
           )}
           {page === 2 && (<>
+            <div className='auth-consent-box'>
+              <div className='auth-check-box' onClick={onConsentCheckHandler}>
+                {consent ? (<div className='check-round-fill-icon'></div>): (<div className='check-ring-light-icon'></div>) }
+              </div>
+              <div className={consentError ? 'auth-consent-title-error' : 'auth-consent-title' }>{'개인정보동의'}</div>
+              <div className='auth-consent-link'>{'더보기'}</div>
+            </div>
             <div className='auth-button' onClick={onSignUpButtonClickHander}>{'회원가입'}</div>
           </>)}
           <div className='auth-description-box'>
