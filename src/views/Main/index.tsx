@@ -6,6 +6,8 @@ import Top3ListItem from 'components/Top3ListItem';
 import { useNavigate } from 'react-router-dom';
 import { SEARCH_PATH } from 'constant';
 import BoardListItem from 'components/BoardListItem';
+import Pagination from 'components/Pagination';
+import { usePagination } from 'hooks';
 
 //          component: 메인 페이지          //
 export default function Main() {
@@ -27,7 +29,7 @@ export default function Main() {
     return (
       <div id='main-top-wrapper'>
         <div className='main-top-container'>
-          <div className='main-top-intro'>{'Hoon Board에서\n다양한 이야기를 나눠보세요'}</div>
+          <div className='main-top-intro'>{'Hoons Board에서\n다양한 이야기를 나눠보세요'}</div>
           <div className='main-top-contents-box'>
             <div className='main-top-contents-title'>{'주간 TOP3 게시글'}</div>
             <div className='main-top-contents'>
@@ -43,17 +45,8 @@ export default function Main() {
 
     //          state: 인기 검색어 리스트 상태          //
     const [popularWordList, setPopularWordList] = useState<string[]>([]);
-    //          state: 최신 게시물 리스트 상태          //
-    const [latestBoardList, setLatestBoardList] = useState<BoardItem[]>([]);
-
-    //          state: 현재 페이지 번호 상태          //
-    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    //          state: 현재 섹션 번호 상태          //
-    const [currentSectionNumber, setCurrentSectionNumber] = useState<number>(1);
-    //          state: 보여줄 게시물 리스트 상태          //
-    const [viewBoardList, setViewBoardList] = useState<BoardItem[]>([]);
-    //          state: 보여줄 페이지 번호 리스트 상태          //
-    const [viewPageNumberList, setViewPageNumberList] = useState<number[]>([]);
+    //          state: 페이지네이션 관련 상태          //
+    const {currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber, viewBoardList, viewPageNumberList, totalSection, setBoardList} = usePagination(); 
 
     //          function: 네비게이트 함수         //
     const navigator = useNavigate();
@@ -63,75 +56,12 @@ export default function Main() {
       navigator(SEARCH_PATH(word));
     }
 
-    //          event handler: 페이지 번호 클릭 이벤트 처리         //
-    const onPageNumberClickHandler = (pageNumber: number) => {
-      setCurrentPageNumber(pageNumber);
-    }
-    //          event handler: 다음 버튼 클릭 이벤트 처리         //
-    const onNextButtonClickHandler = () => {
-      const TOTAL_SECTION = Math.floor((currentBoardListMock.length - 1) / 50) + 1;
-      if (currentSectionNumber === TOTAL_SECTION) {
-        alert('마지막 섹션입니다.');
-        return;
-      }
-      setCurrentPageNumber(currentSectionNumber * 10 + 1);
-      setCurrentSectionNumber(currentSectionNumber + 1);
-    }
-    //          event handler: 이전 버튼 클릭 이벤트 처리         //
-    const onPreviousButtonClickHandler = () => {
-      if (currentSectionNumber === 1) {
-        alert('첫번째 섹션입니다.');
-        return;
-      }
-      setCurrentPageNumber((currentSectionNumber - 1) * 10);
-      setCurrentSectionNumber(currentSectionNumber - 1);
-    }
-
-
-
     //          effect: 컴포넌트 마운트 시 인기 검색어 리스트 불러오기          //
-    useEffect(() => { 
+    useEffect(() => {
       // TODO: API 호출로 변경
       setPopularWordList(popularWordListMock);
-      setLatestBoardList(currentBoardListMock);
+      setBoardList(currentBoardListMock);
     }, []);
-    
-
-
-
-
-    //          effect: 현재 페이지가 변경될 시 보여줄 게시물 리스트 불러오기          //
-    useEffect(() => {
-      // const tmpList = [];
-      // for (let index = 5 * (currentPageNumber - 1); index < 5 * currentPageNumber; index++) {
-        //   if (currentBoardListMock.length === index) break;
-        //   tmpList.push(currentBoardListMock[index]);
-        // }
-        const FIRST_INDEX = 5 * (currentPageNumber - 1)
-        const LAST_INDEX = 5 * currentPageNumber;
-        const tmpList = currentBoardListMock.filter((item, index) => (index >= FIRST_INDEX && index < LAST_INDEX));
-        
-        setViewBoardList(tmpList);
-        
-      }, [currentPageNumber]);
-    //          effect: 현재 섹션이 변경될 시 보여줄 페이지 리스트 불러오기          //
-    useEffect(() => {
-      
-      const FIRST_PAGE_INDEX = 10 * (currentSectionNumber - 1) + 1;
-      const LAST_PAGE_INDEX = 10 * currentSectionNumber;
-  
-      const tmpPageNumberList = [];
-  
-      const TOTAL_PAGE = Math.floor((currentBoardListMock.length - 1) / 5) + 1; // 총 페이지 개수 구하기
-  
-      for (let pageNumber = FIRST_PAGE_INDEX; pageNumber <= LAST_PAGE_INDEX; pageNumber++) {
-        if (pageNumber > TOTAL_PAGE) break;
-        tmpPageNumberList.push(pageNumber);
-      }
-
-      setViewPageNumberList(tmpPageNumberList);
-
-    }, [currentSectionNumber]);
     
     //          render: 메인 하단 컴포넌트 렌더링          //
     return (
@@ -155,23 +85,14 @@ export default function Main() {
             </div>
           </div>
           <div className='main-bottom-pagination-box'>
-            <div className='pagination-container'>
-              <div className='pagination-change-link-box' onClick={onPreviousButtonClickHandler}>
-                <div className='pagination-change-link-icon-box'>
-                  <div className='left-light-icon'></div>
-                </div>
-                <div className='pagination-change-link-text'>{'이전'}</div>
-              </div>
-              <div className='pagination-divider'>{'\|'}</div>
-              {viewPageNumberList.map(pageNumber => pageNumber === currentPageNumber ? <div className='pagination-active-text'>{pageNumber}</div> : <div className='pagination-text' onClick={() => onPageNumberClickHandler(pageNumber)}>{pageNumber}</div>)}
-              <div className='pagination-divider'>{'\|'}</div>
-              <div className='pagination-change-link-box' onClick={onNextButtonClickHandler}>
-                <div className='pagination-change-link-text'>{'다음'}</div>
-                <div className='pagination-change-link-icon-box'>
-                  <div className='right-light-icon'></div>
-                </div>
-              </div>
-            </div>
+            <Pagination
+              currentPageNumber={currentPageNumber}
+              currentSectionNumber={currentSectionNumber}
+              setCurrentPageNumber={setCurrentPageNumber}
+              setCurrentSectionNumber={setCurrentSectionNumber}
+              viewPageNumberList={viewPageNumberList}
+              totalSection={totalSection}
+            />
           </div>
         </div>
       </div>
