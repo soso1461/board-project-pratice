@@ -57,10 +57,37 @@ export default function Main() {
 
     //          function: 네비게이트 함수         //
     const navigator = useNavigate();
+    
     //          event handler: 인기 검색어 뱃지 클릭 이벤트 처리         //
     const onWordBadgeClickHandler = (word: string) => {
       navigator(SEARCH_PATH(word));
     }
+
+    //          event handler: 페이지 번호 클릭 이벤트 처리         //
+    const onPageNumberClickHandler = (pageNumber: number) => {
+      setCurrentPageNumber(pageNumber);
+    }
+    //          event handler: 다음 버튼 클릭 이벤트 처리         //
+    const onNextButtonClickHandler = () => {
+      const TOTAL_SECTION = Math.floor((currentBoardListMock.length - 1) / 50) + 1;
+      if (currentSectionNumber === TOTAL_SECTION) {
+        alert('마지막 섹션입니다.');
+        return;
+      }
+      setCurrentPageNumber(currentSectionNumber * 10 + 1);
+      setCurrentSectionNumber(currentSectionNumber + 1);
+    }
+    //          event handler: 이전 버튼 클릭 이벤트 처리         //
+    const onPreviousButtonClickHandler = () => {
+      if (currentSectionNumber === 1) {
+        alert('첫번째 섹션입니다.');
+        return;
+      }
+      setCurrentPageNumber((currentSectionNumber - 1) * 10);
+      setCurrentSectionNumber(currentSectionNumber - 1);
+    }
+
+
 
     //          effect: 컴포넌트 마운트 시 인기 검색어 리스트 불러오기          //
     useEffect(() => { 
@@ -69,19 +96,42 @@ export default function Main() {
       setLatestBoardList(currentBoardListMock);
     }, []);
     
+
+
+
+
+    //          effect: 현재 페이지가 변경될 시 보여줄 게시물 리스트 불러오기          //
     useEffect(() => {
       // const tmpList = [];
       // for (let index = 5 * (currentPageNumber - 1); index < 5 * currentPageNumber; index++) {
-      //   if (currentBoardListMock.length === index) break;
-      //   tmpList.push(currentBoardListMock[index]);
-      // }
-      const FIRST_INDEX = 5 * (currentPageNumber - 1)
-      const LAST_INDEX = 5 * currentPageNumber;
-      const tmpList = currentBoardListMock.filter((item, index) => (index >= 5 * (FIRST_INDEX - 1) && index < 5 * LAST_INDEX));
+        //   if (currentBoardListMock.length === index) break;
+        //   tmpList.push(currentBoardListMock[index]);
+        // }
+        const FIRST_INDEX = 5 * (currentPageNumber - 1)
+        const LAST_INDEX = 5 * currentPageNumber;
+        const tmpList = currentBoardListMock.filter((item, index) => (index >= FIRST_INDEX && index < LAST_INDEX));
+        
+        setViewBoardList(tmpList);
+        
+      }, [currentPageNumber]);
+    //          effect: 현재 섹션이 변경될 시 보여줄 페이지 리스트 불러오기          //
+    useEffect(() => {
+      
+      const FIRST_PAGE_INDEX = 10 * (currentSectionNumber - 1) + 1;
+      const LAST_PAGE_INDEX = 10 * currentSectionNumber;
+  
+      const tmpPageNumberList = [];
+  
+      const TOTAL_PAGE = Math.floor((currentBoardListMock.length - 1) / 5) + 1; // 총 페이지 개수 구하기
+  
+      for (let pageNumber = FIRST_PAGE_INDEX; pageNumber <= LAST_PAGE_INDEX; pageNumber++) {
+        if (pageNumber > TOTAL_PAGE) break;
+        tmpPageNumberList.push(pageNumber);
+      }
 
-      setViewBoardList(tmpList);
+      setViewPageNumberList(tmpPageNumberList);
 
-    }, [currentPageNumber]);
+    }, [currentSectionNumber]);
     
     //          render: 메인 하단 컴포넌트 렌더링          //
     return (
@@ -104,7 +154,25 @@ export default function Main() {
               </div>
             </div>
           </div>
-          <div className='main-bottom-pagination-box'></div>
+          <div className='main-bottom-pagination-box'>
+            <div className='pagination-container'>
+              <div className='pagination-change-link-box' onClick={onPreviousButtonClickHandler}>
+                <div className='pagination-change-link-icon-box'>
+                  <div className='left-light-icon'></div>
+                </div>
+                <div className='pagination-change-link-text'>{'이전'}</div>
+              </div>
+              <div className='pagination-divider'>{'\|'}</div>
+              {viewPageNumberList.map(pageNumber => pageNumber === currentPageNumber ? <div className='pagination-active-text'>{pageNumber}</div> : <div className='pagination-text' onClick={() => onPageNumberClickHandler(pageNumber)}>{pageNumber}</div>)}
+              <div className='pagination-divider'>{'\|'}</div>
+              <div className='pagination-change-link-box' onClick={onNextButtonClickHandler}>
+                <div className='pagination-change-link-text'>{'다음'}</div>
+                <div className='pagination-change-link-icon-box'>
+                  <div className='right-light-icon'></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
