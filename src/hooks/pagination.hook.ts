@@ -56,6 +56,8 @@ const usePagination = () => {
         
         setViewBoard();
         setViewPage(totalPage);
+        setCurrentPageNumber(1);
+        setCurrentSectionNumber(1);
      }, [boardList]);
     
     //          effect: 현재 페이지가 변경될 시 보여줄 게시물 리스트 불러오기          //
