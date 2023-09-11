@@ -153,6 +153,15 @@
   background-size: 100% 100%;
 }
 
+.arrow-right-icon {
+  width: 100%;
+  height: 100%;
+  
+  background-image: url(assets/arrow-right-icon.png);
+  background-position: 50% 50%;
+  background-size: 100% 100%;
+}
+
 .word-badge {
   border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 30px;

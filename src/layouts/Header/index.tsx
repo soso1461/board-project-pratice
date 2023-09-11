@@ -145,10 +145,10 @@ export default function Header() {
   const UserPageButtons = () => {
 
     //          state: path variable의 email 상태           //
-    const { email } = useParams();
+    const { searchEmail } = useParams();
 
     //          variable: 마이페이지 여부 논리 변수         //
-    const isMyPage = user && user.email === email;
+    const isMyPage = user && user.email === searchEmail;
     
     //          event handler: 로그아웃 버튼 클릭 이벤트 처리          //
     const onLogoutButtonClickHandler = () => {
