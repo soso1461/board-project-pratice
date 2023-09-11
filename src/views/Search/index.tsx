@@ -6,6 +6,7 @@ import { relationWordListMock, searchListMock } from 'mocks';
 import BoardListItem from 'components/BoardListItem';
 import Pagination from 'components/Pagination';
 import { SEARCH_PATH } from 'constant';
+import { BoardItem } from 'types';
 
 
 //          component: 검색 페이지          //
@@ -15,7 +16,7 @@ export default function Search() {
   const { word } = useParams();
   //          state: 페이지네이션 관련 상태          //
   const {currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber,
-    viewBoardList, viewPageNumberList, totalSection, setBoardList} = usePagination();
+    viewBoardList, viewPageNumberList, totalSection, setBoardList} = usePagination<BoardItem>(5);
   //          state: 검색 결과 개수 상태          //
   const [count, setCount] = useState<number>(0);
   //          state: 연관 검색어 리스트 상태          //

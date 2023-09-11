@@ -3,7 +3,7 @@ import './style.css';
 import { CommentItem } from 'types';
 import DefaultProfileImage from 'assets/default-profile-image.png';
 
-//          interface: 댓글 리스트 아이템 컴포넌트 Props          //
+//          interface: 댓글 리스트 아이템 컴포넌트 Props         //
 interface Props {
   commentItem: CommentItem;
 }
@@ -12,10 +12,9 @@ interface Props {
 export default function CommentListItem({ commentItem }: Props) {
 
   //          state: Properties          //
-  const { contents, writeDatetime, nickname, profileImageUrl } = commentItem;
+  const { contents, profileImageUrl, writeDatetime, nickname } = commentItem;
 
-
-  //            render: 댓글 리스트 아이템 컴포넌트 렌더링          //
+  //          render: 댓글 리스트 아이템 컴포넌트 렌더링          //
   return (
     <div className='comment-list-item-box'>
       <div className='comment-list-item-top'>
