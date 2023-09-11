@@ -1,8 +1,13 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
-import { useParams } from 'react-router-dom';
-import { userMock } from 'mocks';
+import { useNavigate, useParams } from 'react-router-dom';
+import { userBoardListMock, userMock } from 'mocks';
 import { useUserStore } from 'stores';
+import { usePagination } from 'hooks';
+import { BoardItem } from 'types';
+import BoardListItem from 'components/BoardListItem';
+import Pagination from 'components/Pagination';
+import { AUTH_PATH, BOARD_WRITE_PATH, USER_PATH } from 'constant';
 
 //          component: 유저 페이지          //
 export default function User() {
@@ -59,9 +64,6 @@ export default function User() {
       setEmail(email);
       setNickname(nickname);
       setProfileImage(profileImage);
-
-      const isMyPage = email === user?.email;
-      setMyPage(isMyPage);
     }, [searchEmail]);
 
     //          render: 유저 정보 컴포넌트 렌더링         
@@ -102,20 +104,50 @@ export default function User() {
   
   //          component: 유저 게시물 컴포넌트         //
   const UserBoardList = () => {
+
+    //          state: 페이지네이션 관련 상태         //
+    const { currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber,
+      viewBoardList, viewPageNumberList, totalSection, setBoardList } = usePagination<BoardItem>(5);
+    //          state: 게시물 개수 상태         //
+    const [count, setCount] = useState<number>(0);
+
+    //          function: 네비게이트 함수         //
+    const navigator = useNavigate();
+
+    //          event handler: 버튼 클릭 이벤트 처리          //
+    const onButtonClickHandler = () => {
+      if (!user) {
+        alert('로그인이 필요합니다.');
+        navigator(AUTH_PATH);
+        return;
+      }
+
+      if (isMyPage) navigator(BOARD_WRITE_PATH);
+      else navigator(USER_PATH(user.email));
+    }
+
+    //          effect: 조회하는 유저의 이메일이 변경될 때마다 실행할 함수          //
+    useEffect(() => {
+      setBoardList(userBoardListMock);
+      setCount(userBoardListMock.length);
+    }, [searchEmail]);
   
     //          render: 유저 게시물 컴포넌트 렌더링         //
     return (
       <div id='user-board-wrapper'>
         <div className='user-board-container'>
           <div className='user-board-title-box'>
-            <div className='user-board-title'>{'내 게시물 '}<span className='emphasis'>{10}</span></div>
+            <div className='user-board-title'>{'내 게시물 '}<span className='emphasis'>{count}</span></div>
           </div>
           <div className='user-board-contents-box'>
-            <div className='user-board-contents-result-box'>
-
-            </div>
+            {count === 0 ? (
             <div className='user-board-contents-nothing'>{'게시물이 없습니다.'}</div>
-            <div className='user-board-button-box'>
+            ): (
+            <div className='user-board-contents-result-box'>
+              {viewBoardList.map(boardItem => <BoardListItem boardItem={boardItem} />)}
+            </div>
+            )}
+            <div className='user-board-button-box' onClick={onButtonClickHandler}>
               <div className='user-board-button-contents'>
                 {isMyPage ? (
                 <>
@@ -135,17 +167,32 @@ export default function User() {
               </div>
             </div>
           </div>
-          <div className='user-board-pagination-box'></div>
+          <div className='user-board-pagination-box'>
+            {count !== 0 && (
+            <Pagination
+              currentPageNumber={currentPageNumber}
+              currentSectionNumber={currentSectionNumber}
+              setCurrentPageNumber={setCurrentPageNumber}
+              setCurrentSectionNumber={setCurrentSectionNumber}
+              viewPageNumberList={viewPageNumberList}
+              totalSection={totalSection}
+             />
+            )}
+          </div>
         </div>
       </div>
     )
   };
-  
-//          render: 유저 페이지 렌더링          //
-return (
-  <div>
-    <UserInfo />
-    <UserBoardList />
-  </div>
-)
-}
+  //          effect: 조회하는 유저의 이메일이 변경될 때마다 실행할 함수          //
+  useEffect(() => {
+    const isMyPage = searchEmail === user?.email;
+    setMyPage(isMyPage);
+  }, [searchEmail])
+  //          render: 유저 페이지 렌더링          //
+  return (
+    <div>
+      <UserInfo />
+      <UserBoardList />
+    </div>
+  )
+  }
