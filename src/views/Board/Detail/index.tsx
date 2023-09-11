@@ -8,7 +8,7 @@ import { useUserStore } from 'stores';
 import { usePagination } from 'hooks';
 import CommentListItem from 'components/CommentListItem';
 import Pagination from 'components/Pagination';
-import { BOARD_UPDATE_PATH, MAIN_PATH } from 'constant';
+import { BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 
 //          component: 게시물 상세보기 페이지          //
 export default function BoardDetail() {
@@ -29,6 +29,12 @@ export default function BoardDetail() {
     const [showMore, setShowMore] = useState<boolean>(false);
     //          state: 게시물 상태          //
     const [board, setBoard] = useState<Board | null>(null);
+
+    //          event handler: 작성자 클릭 이벤트 처리          //
+    const onNicknameClickHandler = () => {
+      if (!board) return;
+      navigator(USER_PATH(board.writerEmail));
+    }
 
     //          event handler: more button 클릭 이벤트 처리          //
     const onMoreButtonClickHandler = () => {
@@ -61,7 +67,7 @@ export default function BoardDetail() {
           <div className='board-detail-sub-box'>
             <div className='board-detail-write-info-box'>
               <div className='board-detail-writer-profile-image' style={{ backgroundImage: `url(${DefaultProfileImage})` }}></div>
-              <div className='board-detail-writer-nickname'>{board?.nickname}</div>
+              <div className='board-detail-writer-nickname' onClick={onNicknameClickHandler}>{board?.nickname}</div>
               <div className='board-detail-info-divider'>{'\|'}</div>
               <div className='board-detail-write-date'>{board?.writeDatetime}</div>
             </div>
