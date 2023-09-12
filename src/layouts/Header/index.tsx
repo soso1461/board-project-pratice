@@ -119,7 +119,7 @@ export default function Header() {
   const UploadButton = () => { 
     
     //          state: 게시물 제목, 내용, 이미지 전역 상태         //
-    const { title, contents, image, resetBoard } = useBoardStore();
+    const { title, contents, images, resetBoard } = useBoardStore();
 
     //          event handler: 업로드 버튼 클릭 이벤트 처리         //
     const onUploadButttonClickHandler = () => {
