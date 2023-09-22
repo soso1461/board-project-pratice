@@ -1,7 +1,7 @@
 // npm i axios
 // npm i react-router-dom
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { commentListMock, top3ListMock } from 'mocks';
 import Top3ListItem from 'components/Top3ListItem';
@@ -18,25 +18,23 @@ import BoardUpdate from 'views/Board/Update';
 import BoardWrite from 'views/Board/Write';
 import User from 'views/User';
 import Container from 'layouts/Container';
+import axios from 'axios';
 
 function App() {
 
-  const { pathname } = useLocation();
+  const serverCheck = async () => {
+    const response = await axios.get("http://localhost:4000");
+    return response.data;
+  };
+
+  useEffect(() => {
+    serverCheck().then(data => console.log(data)) // then을 넣어줘야 뒤에 데이터가 넘어옴
+    .catch((error) => {
+      console.log(error.response.data);
+    });
+  }, []);
 
   return (
-    // <div>
-    //   <div>
-    //     <Header />
-    //   </div>
-    //   <div style={{ width: '1500px', display: 'flex', justifyContent: 'space-between', gap: '24px' }}>
-    //     {top3ListMock.map((boardItem) => (<Top3ListItem boardItem={boardItem} />))}
-    //   </div>
-    //   <br /><br /><br /><br /><br /><br />
-    //   <div style= {{ display: 'flex', flexDirection: 'column', gap: '30px'}}>
-    //     {commentListMock.map((commentItem) => (<CommentListItem commentItem={commentItem} />))}
-    //   </div>
-    //   <br /><br /><br /><br /><br /><br />
-    //   <>
         <Routes>
           <Route element={<Container />}>
             <Route path={MAIN_PATH} element={<Main />} />
@@ -49,8 +47,6 @@ function App() {
             <Route path='*' element={<h1>404 Not Found</h1>} />
           </Route>
         </Routes>
-      // </>
-    // </div>
   );
 }
 
