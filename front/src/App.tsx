@@ -1,3 +1,6 @@
+// npm i axios
+// npm i react-router-dom
+
 import React, { useState } from 'react';
 import './App.css';
 import { commentListMock, top3ListMock } from 'mocks';
