@@ -105,7 +105,7 @@ export default function Header() {
     }
 
     //          render: 마이페이지 버튼 컴포넌트 렌더링 (로그인 상태일 때)          //
-    if (cookies.email)
+    if (cookies.accessToken)
       return (
         <div className='mypage-button' onClick={onMyPageButtonClickHandler}>마이페이지</div>
       )

@@ -18,21 +18,54 @@ import BoardUpdate from 'views/Board/Update';
 import BoardWrite from 'views/Board/Write';
 import User from 'views/User';
 import Container from 'layouts/Container';
-import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useUserStore } from 'stores';
+import { getSignInRequest } from 'apis';
+import { GetSignInUserResponseDto } from 'apis/dto/response/user';
+import ResponseDto from 'apis/dto/response';
 
 function App() {
 
-  const serverCheck = async () => {
-    const response = await axios.get("http://localhost:4000");
-    return response.data;
-  };
+  //            state: 현재 페이지 url 상태            //
+  const { pathname } = useLocation();
+  //            state: 로그인 유저 상태            //
+  const { user, setUser } = useUserStore();
+  //            state: cookie 상태            //
+  const [cookies, setCookies] = useCookies();
+  // const serverCheck = async () => {
+  //   const response = await axios.get("http://localhost:4000");
+  //   return response.data;
+  // };
 
+  //            function: get sign in user response 처리 함수         //
+  const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto) => {
+    const { code } = responseBody;
+    if (code !== 'SU') {
+      setCookies('accessToken', '', { expires: new Date(), path: MAIN_PATH });
+      setUser(null);
+      return;
+    }
+
+    setUser({ ...responseBody as GetSignInUserResponseDto });
+
+  }
+
+  //            effect: 현재 path가 변경될 때마다 실행될 함수         //
   useEffect(() => {
-    serverCheck().then(data => console.log(data)) // then을 넣어줘야 뒤에 데이터가 넘어옴
-    .catch((error) => {
-      console.log(error.response.data);
-    });
-  }, []);
+    // serverCheck().then(data => console.log(data)) // then을 넣어줘야 뒤에 데이터가 넘어옴
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    // });
+
+    const accessToken = cookies.accessToken;
+    if (!accessToken) {
+      setUser(null);
+      return;
+    }
+
+    getSignInRequest(accessToken).then(getSignInUserResponse);
+
+  }, [pathname]);
 
   return (
         <Routes>
