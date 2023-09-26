@@ -40,6 +40,7 @@ function App() {
   //            function: get sign in user response 처리 함수         //
   const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto) => {
     const { code } = responseBody;
+
     if (code !== 'SU') {
       setCookies('accessToken', '', { expires: new Date(), path: MAIN_PATH });
       setUser(null);
@@ -62,7 +63,7 @@ function App() {
       setUser(null);
       return;
     }
-
+    
     getSignInRequest(accessToken).then(getSignInUserResponse);
 
   }, [pathname]);

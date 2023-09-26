@@ -47,19 +47,21 @@ export default function Authentication() {
     //          function: sign in response 처리 함수          //
     const signInResponse = (responseBody: SignInResponseDto | ResponseDto) => {
       const { code } = responseBody;
+
       if (code === 'VF') alert('모두 입력해주세요.');
       if (code === 'SF') setError(true);
       if (code === 'DBE') alert('데이터베이스 오류입니다,');
       if (code !== 'SU') return;
 
+      
       const { token, expirationTime } = responseBody as SignInResponseDto;
-
+      
       const now = new Date().getTime();
       const expires = new Date(now + expirationTime * 1000);
-
-      setCookies('accessToken',  token, { expires, path: MAIN_PATH });
+      
+      setCookies('accessToken', token, { expires, path: MAIN_PATH });
       navigator(MAIN_PATH);
-
+      
     }
 
     //          event handler: 이메일 인풋 key down 이벤트 처리         //

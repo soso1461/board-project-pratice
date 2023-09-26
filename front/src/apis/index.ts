@@ -4,8 +4,11 @@ import { SignInResponseDto, SignUpResponseDto } from "./dto/response/auth";
 import ResponseDto from "./dto/response";
 import { GetSignInUserResponseDto, GetUserResponseDto } from "./dto/response/user";
 
+// description: Domain URL //
+const DOMAIN = 'http://localhost:4000';
+
 // description: API Domain 주소 //
-const API_DOMAIN = 'http://localhost:4000/api/v1';
+const API_DOMAIN = `${DOMAIN}/api/v1`;
 // description: Authorization Header //
 const authorization = (token: string) => { 
     return { headers: { Authorization: `Bearer ${token}` } };
@@ -79,3 +82,25 @@ export const getUserRequest = async (email: string) => {
 
     return result;
 };
+
+// description: File Domain 주소 //
+const FILE_DOMAIN = `${DOMAIN}/file`;
+
+// description: file upload end point //
+const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
+
+// description: File Content type Header //
+const multipart = { headers: { 'Content-Type' : 'mutipart/form-data' } };
+
+// description: file upload request //
+export const fileUploadRequest = async (data: FormData) => {
+    const result = await axios.post(FILE_UPLOAD_URL(), data, multipart)
+        .then(response => {
+            const responseBody: string = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            return null;
+        });
+    return result;
+}
