@@ -7,7 +7,10 @@ import { usePagination } from 'hooks';
 import { BoardItem } from 'types';
 import BoardListItem from 'components/BoardListItem';
 import Pagination from 'components/Pagination';
-import { AUTH_PATH, BOARD_WRITE_PATH, USER_PATH } from 'constant';
+import { AUTH_PATH, BOARD_WRITE_PATH, MAIN_PATH, USER_PATH } from 'constant';
+import { getUserRequest } from 'apis';
+import { GetUserResponseDto } from 'apis/dto/response/user';
+import ResponseDto from 'apis/dto/response';
 
 //          component: 유저 페이지          //
 export default function User() {
@@ -18,6 +21,9 @@ export default function User() {
   const { user } = useUserStore();
   //          state: 본인 여부 상태         //
   const [isMyPage, setMyPage] = useState<boolean>(false);
+
+  //          function: 네비게이트 함수         //
+  const navigator = useNavigate();
 
   //          component: 유저 정보 컴포넌트          //
   const UserInfo = () => {
@@ -32,6 +38,22 @@ export default function User() {
     const [nickname, setNickname] = useState<string>('나는주코야키');
     //          state: 닉네임 변경 상태         //
     const [showChangeNickname, setShowChangeNickname] = useState<boolean>(false);
+
+    //          function: get user response 처리 함수         //
+    const getUserResponse = (responseBody: GetUserResponseDto | ResponseDto) => {
+      const { code } = responseBody;
+      if (code === 'NU') alert('존재하지 않는 유저입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') {
+        navigator(MAIN_PATH);
+        return;
+      }
+
+      const { email, nickname, profileImage } = responseBody as GetUserResponseDto;
+      setEmail(email);
+      setNickname(nickname);
+      setProfileImage(profileImage);
+    }
 
     //          event handler: 프로필 이미지 클릭 이벤트 처리         //
     const onProfileImageClickHandler = () => {
@@ -60,11 +82,12 @@ export default function User() {
 
     //          effect: 조회하는 유저의 이메일이 변경될 때마다 실행할 함수          //
     useEffect(() => {
-      const { email, nickname, profileImage } = userMock;
-      setEmail(email);
-      setNickname(nickname);
-      setProfileImage(profileImage);
-    }, [searchEmail]);
+      if (!searchEmail) {
+        navigator(MAIN_PATH);
+        return;
+      }
+      getUserRequest(searchEmail).then(getUserResponse);
+    }, [searchEmail]);  
 
     //          render: 유저 정보 컴포넌트 렌더링         
     return (
@@ -72,7 +95,7 @@ export default function User() {
         <div className='user-info-container'>
           <div className={isMyPage ? 'user-info-profile-image-box-mypage' : 'user-info-profile-image-box'} onClick={onProfileImageClickHandler}>
             <input ref={fileInputRef} type='file' accept='image/*' style={{ display: 'none' }} onChange={onProfileImageChangeHandler} />  {/* display: 'none'을 해주면 파일 선택이 보이지 않음 */}
-            {profileImage === '' ? (
+            {profileImage === null ? (
               <div className='user-info-profile-default-image'>
                 <div className='user-info-profile-icon-box'>
                   <div className='image-box-while-icon'></div>
@@ -110,9 +133,6 @@ export default function User() {
       viewBoardList, viewPageNumberList, totalSection, setBoardList } = usePagination<BoardItem>(5);
     //          state: 게시물 개수 상태         //
     const [count, setCount] = useState<number>(0);
-
-    //          function: 네비게이트 함수         //
-    const navigator = useNavigate();
 
     //          event handler: 버튼 클릭 이벤트 처리          //
     const onButtonClickHandler = () => {
