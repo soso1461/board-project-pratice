@@ -40,7 +40,7 @@ public class BoardEntity {
 
         this.title = dto.getTitle();
         this.contents = dto.getContent();
-        this.writeDatetime = "";
+        this.writeDatetime = writeDatetime;
         this.viewCount = 0;
         this.commentCount = 0;
         this.favoriteCount = 0;

@@ -24,4 +24,9 @@ public class BoardImageEntity {
     private int boardNumber;
     private String imageUrl;
 
+    public BoardImageEntity (int boardNumber, String imageUrl) {
+        this.boardNumber = boardNumber;
+        this.imageUrl = imageUrl;
+    }
+
 }
