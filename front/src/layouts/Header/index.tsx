@@ -186,7 +186,7 @@ export default function Header() {
     
     //          event handler: 로그아웃 버튼 클릭 이벤트 처리          //
     const onLogoutButtonClickHandler = () => {
-      setCookies('email', '', { path: '/', expires: new Date() });
+      setCookies('accessToken', '', { path: '/', expires: new Date() });
       setUser(null);
     }
     

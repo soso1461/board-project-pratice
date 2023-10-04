@@ -9,7 +9,7 @@ import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { usePagination } from 'hooks';
 import { getLatestBoardListRequest } from 'apis';
-import getLatestBoardListResponseDto from 'apis/dto/response/board/get-latest-board-list.response.dto';
+import GetLatestBoardListResponseDto from 'apis/dto/response/board/get-latest-board-list.response.dto';
 import ResponseDto from 'apis/dto/response';
 
 //          component: 메인 페이지          //
@@ -53,12 +53,12 @@ export default function Main() {
     const navagator = useNavigate();
 
     //          function: get latest board list response 처리 함수          //
-    const getLatestBoardListResponse = (responseBody: getLatestBoardListResponseDto | ResponseDto) => {
+    const getLatestBoardListResponse = (responseBody: GetLatestBoardListResponseDto | ResponseDto) => {
       const { code } = responseBody;
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code !== 'SU') return;
 
-      const { latestList } = responseBody as getLatestBoardListResponseDto;
+      const { latestList } = responseBody as GetLatestBoardListResponseDto;
       setBoardList(latestList);
     }
 
