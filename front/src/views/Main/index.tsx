@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import './style.css';
-import { BoardItem } from 'types';
+import { BoardListItem } from 'types';
 import { currentBoardListMock, popularWordListMock, top3ListMock } from 'mocks';
 import Top3ListItem from 'components/Top3ListItem';
 import { useNavigate } from 'react-router-dom';
 import { SEARCH_PATH } from 'constant';
-import BoardListItem from 'components/BoardListItem';
+import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { usePagination } from 'hooks';
 
@@ -16,7 +16,7 @@ export default function Main() {
   const MainTop = () => {
 
     //          state: 주간 Top3 게시물 리스트 상태          //
-    const [top3List, setTop3List] = useState<BoardItem[]>([]);
+    const [top3List, setTop3List] = useState<BoardListItem[]>([]);
 
     //          effect: 컴포넌트 마운트 시 top3 리스트 불러오기          //
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function Main() {
     //          state: 인기 검색어 리스트 상태          //
     const [popularWordList, setPopularWordList] = useState<string[]>([]);
     //          state: 페이지네이션 관련 상태          //
-    const {currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber, viewBoardList, viewPageNumberList, totalSection, setBoardList} = usePagination<BoardItem>(5);
+    const {currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber, viewBoardList, viewPageNumberList, totalSection, setBoardList} = usePagination<BoardListItem>(5);
 
     //          function: 네비게이트 함수          //
     const navagator = useNavigate();
@@ -68,7 +68,7 @@ export default function Main() {
           <div className='main-bottom-title'>{'최신 게시물'}</div>
           <div className='main-bottom-contents-box'>
             <div className='main-bottom-latest-contents-box'>
-              { viewBoardList.map(boardItem => <BoardListItem boardItem={boardItem} />) }
+              { viewBoardList.map(boardItem => <BoardItem boardItem={boardItem} />) }
             </div>
             <div className='main-bottom-popular-word-box'>
               <div className='main-bottom-popular-word-card'>

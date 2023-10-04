@@ -1,6 +1,6 @@
-import { FavoriteItem } from 'types';
+import { FavoriteListItem } from 'types';
 
-const favoriteListMock: FavoriteItem[] = [
+const favoriteListMock: FavoriteListItem[] = [
     {
         email: 'email@email.com',
         nickname: '나는주코야키',

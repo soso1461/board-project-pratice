@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { commentListMock, top3ListMock } from 'mocks';
 import Top3ListItem from 'components/Top3ListItem';
-import CommentListItem from 'components/CommentListItem';
+import CommentListItem from 'components/CommentItem';
 import Footer from 'layouts/Footer';
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import Header from 'layouts/Header';

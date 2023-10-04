@@ -51,8 +51,22 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
     return result;
 };
 
+// description: get latest board list API end point //
+const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/board/latest-list`;
 // description: post board API end point //
 const POST_BOARD_URL = () => `${API_DOMAIN}/board`;
+
+// description: get latest board list request //
+export const getLatestBoardListRequest = async() => {
+    const result = await axios.get(GET_LATEST_BOARD_LIST_URL())
+        .then(response => {
+
+        })
+        .catch(error => {
+
+        });
+    return result;
+}
 
 // description: post board request //
 export const postBoardRequest = async (requestBody: PostBoardRequestDto, token: string) => {

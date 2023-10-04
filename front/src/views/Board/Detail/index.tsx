@@ -1,12 +1,12 @@
 import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
 import './style.css';
 import DefaultProfileImage from 'assets/default-profile-image.png';
-import { Board, CommentItem, FavoriteItem } from 'types';
+import { Board, CommentListItem, FavoriteListItem } from 'types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { boardMock, commentListMock, favoriteListMock } from 'mocks';
 import { useUserStore } from 'stores';
 import { usePagination } from 'hooks';
-import CommentListItem from 'components/CommentListItem';
+import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import { BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 
@@ -100,9 +100,9 @@ export default function BoardDetail() {
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
     //          state: 좋아요 리스트 상태          //
-    const [favoriteList, setFavoriteList] = useState<FavoriteItem[]>([]);
+    const [favoriteList, setFavoriteList] = useState<FavoriteListItem[]>([]);
     //          state: 댓글 리스트 페이지네이션 상태          //
-    const {currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber, viewBoardList, viewPageNumberList, totalSection, setBoardList} = usePagination<CommentItem>(3);
+    const {currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber, viewBoardList, viewPageNumberList, totalSection, setBoardList} = usePagination<CommentListItem>(3);
     //          state: 댓글 갯수 상태          //
     const [commentsCount, setCommentsCount] = useState<number>(0);
 
@@ -193,7 +193,7 @@ export default function BoardDetail() {
             <div className='board-detail-bottom-comments-list-container'>
               <div className='board-detail-bottom-comments-list-title'>{'댓글 '}<span className='emphasis'>{commentsCount}</span></div>
               <div className='board-detail-bottom-comments-list-contents'>
-                {viewBoardList.map(commentItem => <CommentListItem commentItem={commentItem} />)}
+                {viewBoardList.map(commentItem => <CommentItem commentItem={commentItem} />)}
               </div>
             </div>
           </div>

@@ -4,8 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { userBoardListMock, userMock } from 'mocks';
 import { useUserStore } from 'stores';
 import { usePagination } from 'hooks';
-import { BoardItem } from 'types';
-import BoardListItem from 'components/BoardListItem';
+import { BoardListItem } from 'types';
+import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { AUTH_PATH, BOARD_WRITE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 import { getUserRequest } from 'apis';
@@ -130,7 +130,7 @@ export default function User() {
 
     //          state: 페이지네이션 관련 상태         //
     const { currentPageNumber, setCurrentPageNumber, currentSectionNumber, setCurrentSectionNumber,
-      viewBoardList, viewPageNumberList, totalSection, setBoardList } = usePagination<BoardItem>(5);
+      viewBoardList, viewPageNumberList, totalSection, setBoardList } = usePagination<BoardListItem>(5);
     //          state: 게시물 개수 상태         //
     const [count, setCount] = useState<number>(0);
 
@@ -164,7 +164,7 @@ export default function User() {
             <div className='user-board-contents-nothing'>{'게시물이 없습니다.'}</div>
             ): (
             <div className='user-board-contents-result-box'>
-              {viewBoardList.map(boardItem => <BoardListItem boardItem={boardItem} />)}
+              {viewBoardList.map(boardItem => <BoardItem boardItem={boardItem} />)}
             </div>
             )}
             <div className='user-board-button-box' onClick={onButtonClickHandler}>

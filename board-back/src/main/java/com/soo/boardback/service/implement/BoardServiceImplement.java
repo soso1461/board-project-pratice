@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.soo.boardback.dto.request.board.PostBoardRequestDto;
 import com.soo.boardback.dto.response.ResponseDto;
+import com.soo.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.soo.boardback.dto.response.board.PostBoardResponseDto;
 import com.soo.boardback.entity.BoardEntity;
 import com.soo.boardback.entity.BoardImageEntity;
+import com.soo.boardback.entity.BoardViewEntity;
 import com.soo.boardback.repository.BoardImageRepository;
 import com.soo.boardback.repository.BoardRepository;
+import com.soo.boardback.repository.BoardViewRepository;
 import com.soo.boardback.repository.UserRepository;
 import com.soo.boardback.service.BoardService;
 
@@ -24,6 +27,7 @@ public class BoardServiceImplement implements BoardService {
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final BoardViewRepository boardViewRepository;
     private final BoardImageRepository boardImageRepository;
 
     @Override
@@ -54,6 +58,24 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return PostBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
+
+        List<BoardViewEntity> boardViewEntities = new ArrayList<>();
+        
+        try {
+
+            boardViewEntities = boardViewRepository.findByOrderByWriteDatetimeDesc();
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetLatestBoardListResponseDto.success(boardViewEntities);
+
     }
     
 }
