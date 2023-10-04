@@ -5,6 +5,7 @@ import ResponseDto from "./dto/response";
 import { GetSignInUserResponseDto, GetUserResponseDto } from "./dto/response/user";
 import { PostBoardRequestDto } from "./dto/request/board";
 import { PostBoardResponsetDto } from "./dto/response/board";
+import getLatestBoardListResponseDto from "./dto/response/board/get-latest-board-list.response.dto";
 
 // description: Domain URL //
 const DOMAIN = 'http://localhost:4000';
@@ -60,10 +61,12 @@ const POST_BOARD_URL = () => `${API_DOMAIN}/board`;
 export const getLatestBoardListRequest = async() => {
     const result = await axios.get(GET_LATEST_BOARD_LIST_URL())
         .then(response => {
-
+            const responseBody: getLatestBoardListResponseDto = response.data;
+            return responseBody;
         })
         .catch(error => {
-
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
         });
     return result;
 }

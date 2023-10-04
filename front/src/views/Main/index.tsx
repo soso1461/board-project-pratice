@@ -8,6 +8,9 @@ import { SEARCH_PATH } from 'constant';
 import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { usePagination } from 'hooks';
+import { getLatestBoardListRequest } from 'apis';
+import getLatestBoardListResponseDto from 'apis/dto/response/board/get-latest-board-list.response.dto';
+import ResponseDto from 'apis/dto/response';
 
 //          component: 메인 페이지          //
 export default function Main() {
@@ -49,16 +52,26 @@ export default function Main() {
     //          function: 네비게이트 함수          //
     const navagator = useNavigate();
 
+    //          function: get latest board list response 처리 함수          //
+    const getLatestBoardListResponse = (responseBody: getLatestBoardListResponseDto | ResponseDto) => {
+      const { code } = responseBody;
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      const { latestList } = responseBody as getLatestBoardListResponseDto;
+      setBoardList(latestList);
+    }
+
     //          event handler: 인기 검색어 뱃지 클릭 이벤트 처리          //
     const onWordBadgeClickHandler = (word: string) => {
       navagator(SEARCH_PATH(word));
     }
 
-    //          effect: 컴포넌트 마운트 시 인기 검색어 리스트 불러오기          //
+    //          effect: 컴포넌트 마운트 시 실행할 함수          //
     useEffect(() => {
       // TODO: API 호출로 변경
       setPopularWordList(popularWordListMock);
-      setBoardList(currentBoardListMock);
+      getLatestBoardListRequest().then(getLatestBoardListResponse);
     }, []);
 
     //          render: 메인 하단 컴포넌트 렌더링          //
