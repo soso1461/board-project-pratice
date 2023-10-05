@@ -20,7 +20,7 @@ import User from 'views/User';
 import Container from 'layouts/Container';
 import { useCookies } from 'react-cookie';
 import { useUserStore } from 'stores';
-import { getSignInRequest } from 'apis';
+import { getSignInUserRequest } from 'apis';
 import { GetSignInUserResponseDto } from 'apis/dto/response/user';
 import ResponseDto from 'apis/dto/response';
 
@@ -64,7 +64,7 @@ function App() {
       return;
     }
     
-    getSignInRequest(accessToken).then(getSignInUserResponse);
+    getSignInUserRequest(accessToken).then(getSignInUserResponse);
 
   }, [pathname]);
 

@@ -9,9 +9,10 @@ import { usePagination } from 'hooks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import { BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { getBoardRequest, getFavoriteListRequest } from 'apis';
+import { getBoardRequest, getFavoriteListRequest, putFavoriteRequest } from 'apis';
 import { GetBoardResponseDto, GetFavoriteListResponseDto } from 'apis/dto/response/board';
 import ResponseDto from 'apis/dto/response';
+import { useCookies } from 'react-cookie';
 
 //          component: 게시물 상세보기 페이지          //
 export default function BoardDetail() {
@@ -20,6 +21,8 @@ export default function BoardDetail() {
   const { boardNumber } = useParams();
   //          state: 로그인 유저 상태          //
   const { user } = useUserStore();
+  //          state: cookie 상태          //
+  const [cookies, setCookie] = useCookies();
   
   //          function: 네비게이트 함수          //
   const navigator = useNavigate();
@@ -32,7 +35,7 @@ export default function BoardDetail() {
     const [showMore, setShowMore] = useState<boolean>(false);
     //          state: 게시물 상태          //
     const [board, setBoard] = useState<Board | null>(null);
-    
+
     //          function: get board response 처리 함수          //
     const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto) => {
       const { code } = responseBody;
@@ -43,34 +46,34 @@ export default function BoardDetail() {
         return;
       }
 
-      const board: Board = { ...responseBody as GetBoardResponseDto }
+      const board: Board = { ...responseBody as GetBoardResponseDto };
       setBoard(board);
 
       if (!user) return;
       const isWriter = user.email === board.writerEmail;
       setWriter(isWriter);
-    }
+    };
 
     //          event handler: 작성자 클릭 이벤트 처리          //
     const onNicknameClickHandler = () => {
       if (!board) return;
       navigator(USER_PATH(board.writerEmail));
-    }
+    };
 
     //          event handler: more button 클릭 이벤트 처리          //
     const onMoreButtonClickHandler = () => {
       setShowMore(!showMore);
-    }
+    };
     //          event handler: 수정 버튼 클릭 이벤트 처리          //
     const onUpdateButtonClickHandler = () => {
       if (!boardNumber) return;
       navigator(BOARD_UPDATE_PATH(boardNumber));
-    }
+    };
     //          event handler: 삭제 버튼 클릭 이벤트 처리          //
     const onDeleteButtonClickHandler = () => {
       alert(`${boardNumber} 게시물 삭제!`);
       navigator(MAIN_PATH);
-    }
+    };
 
     //          effect: 게시물 번호 path variable이 바뀔때 마다 게시물 불러오기          //
     useEffect(() => {
@@ -138,16 +141,31 @@ export default function BoardDetail() {
     //          state: 댓글 상태          //
     const [comment, setComment] = useState<string>('');
 
-    //          function: get favorite list response 처리 함수          //
+    //           function: get favorite list response 처리 함수          //
     const getFavoriteListResponse = (responseBody: GetFavoriteListResponseDto | ResponseDto) => {
       const { code } = responseBody;
       if (code === 'NB') alert('존재하지 않는 게시물입니다.');
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
-      if (code === 'SU') return;
+      if (code !== 'SU') return;
 
       const { favoriteList } = responseBody as GetFavoriteListResponseDto;
       setFavoriteList(favoriteList);
-    };
+
+      const isFavorite = favoriteList.findIndex(item => item.email === user?.email) !== -1;
+      setFavorite(isFavorite);
+    };    
+    //           function: put favorite response 처리 함수          //
+    const putFavoriteResponse = (code: string) => {
+      if (code === 'VF') alert('잘못된 접근입니다.');
+      if (code === 'NU') alert('존재하지 않는 유저입니다.');
+      if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'AF') alert('인증에 실패했습니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      if (!boardNumber) return;
+      getFavoriteListRequest(boardNumber).then(getFavoriteListResponse);
+    }
 
     //           event handler: 좋아요 박스 보기 버튼 클릭 이벤트 처리          //
     const onShowFavoriteButtonClickHandler = () => {
@@ -159,12 +177,14 @@ export default function BoardDetail() {
     }
     //           event handler: 좋아요 버튼 클릭 이벤트 처리          //
     const onFavoriteButtonClickHandler = () => {
-      if (!user) {
+      const accessToken = cookies.accessToken;
+      if (!accessToken) {
         alert('로그인시 이용가능합니다.');
         return;
       }
-      // TODO: API 연결로 변경
-      setFavorite(!isFavorite);
+      if (!boardNumber) return;
+
+      putFavoriteRequest(boardNumber, accessToken).then(putFavoriteResponse);
     }
     //           event handler: 댓글 변경 이벤트 처리          //
     const onCommentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
