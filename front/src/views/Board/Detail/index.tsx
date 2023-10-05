@@ -9,8 +9,8 @@ import { usePagination } from 'hooks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import { BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { getBoardRequest } from 'apis';
-import { GetBoardResponseDto } from 'apis/dto/response/board';
+import { getBoardRequest, getFavoriteListRequest } from 'apis';
+import { GetBoardResponseDto, GetFavoriteListResponseDto } from 'apis/dto/response/board';
 import ResponseDto from 'apis/dto/response';
 
 //          component: 게시물 상세보기 페이지          //
@@ -138,6 +138,17 @@ export default function BoardDetail() {
     //          state: 댓글 상태          //
     const [comment, setComment] = useState<string>('');
 
+    //          function: get favorite list response 처리 함수          //
+    const getFavoriteListResponse = (responseBody: GetFavoriteListResponseDto | ResponseDto) => {
+      const { code } = responseBody;
+      if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'SU') return;
+
+      const { favoriteList } = responseBody as GetFavoriteListResponseDto;
+      setFavoriteList(favoriteList);
+    };
+
     //           event handler: 좋아요 박스 보기 버튼 클릭 이벤트 처리          //
     const onShowFavoriteButtonClickHandler = () => {
       setShowFavorite(!showFavorite);
@@ -167,7 +178,13 @@ export default function BoardDetail() {
 
     //          effect: 게시물 번호 path variable이 바뀔때 마다 좋아요 및 댓글 리스트 불러오기          //
     useEffect(() => {
-      setFavoriteList(favoriteListMock);
+      if (!boardNumber) {
+        alert('잘못된 접근입니다.');
+        navigator(MAIN_PATH);
+        return;
+      }
+      getFavoriteListRequest(boardNumber).then(getFavoriteListResponse);
+
       setBoardList(commentListMock);
       setCommentsCount(commentListMock.length);
     }, [boardNumber]);
