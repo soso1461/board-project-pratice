@@ -9,10 +9,11 @@ import { usePagination } from 'hooks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import { BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { getBoardRequest, getCommentListRequest, getFavoriteListRequest, putFavoriteRequest } from 'apis';
+import { getBoardRequest, getCommentListRequest, getFavoriteListRequest, postCommentRequest, putFavoriteRequest } from 'apis';
 import { GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto } from 'apis/dto/response/board';
 import ResponseDto from 'apis/dto/response';
 import { useCookies } from 'react-cookie';
+import PostCommentRequestDto from 'apis/dto/request/board/post-comment.request.dto';
 
 //          component: 게시물 상세보기 페이지          //
 export default function BoardDetail() {
@@ -173,9 +174,22 @@ export default function BoardDetail() {
       if (code === 'AF') alert('인증에 실패했습니다.');
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code !== 'SU') return;
-
+      
       if (!boardNumber) return;
       getFavoriteListRequest(boardNumber).then(getFavoriteListResponse);
+    }
+    //           function: post comment response 처리 함수          //
+    const postCommentResponse = (code: string) => {
+      if (code === 'VF') alert('잘못된 접근입니다.');
+      if (code === 'NU') alert('존재하지 않는 유저입니다.');
+      if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'AF') alert('인증에 실패했습니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      setComment('');
+      if (!boardNumber) return;
+      getCommentListRequest(boardNumber).then(getCommentListResponse);
     }
 
     //           event handler: 좋아요 박스 보기 버튼 클릭 이벤트 처리          //
@@ -196,6 +210,21 @@ export default function BoardDetail() {
       if (!boardNumber) return;
 
       putFavoriteRequest(boardNumber, accessToken).then(putFavoriteResponse);
+    }
+    //           event handler: 댓글 작성 버튼 클릭 이벤트 처리          //
+    const onCommentButtonClickHandler = () => {
+      const accessToken = cookies.accessToken;
+      if (!accessToken) {
+        alert('로그인시 이용가능합니다,');
+        return;
+      }
+      if (!boardNumber) return;
+
+      const requestBody: PostCommentRequestDto = {
+        content: comment
+      };
+
+      postCommentRequest(requestBody, boardNumber, accessToken).then(postCommentResponse);
     }
     //           event handler: 댓글 변경 이벤트 처리          //
     const onCommentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -282,7 +311,7 @@ export default function BoardDetail() {
             <div className='board-detail-bottom-comments-input-container'>
               <textarea ref={textareaRef} className='board-detail-bottom-comments-input' placeholder='댓글을 작성해주세요.' value={comment} onChange={onCommentChangeHandler} />
               <div className='board-detail-bottom-comments-button-box'>
-                {comment.length === 0 ? (<div className='board-detail-bottom-comments-button-disable'>{'댓글달기'}</div>) : (<div className='board-detail-bottom-comments-button'>{'댓글달기'}</div>)}
+                {comment.length === 0 ? (<div className='board-detail-bottom-comments-button-disable'>{'댓글달기'}</div>) : (<div className='board-detail-bottom-comments-button' onClick={onCommentButtonClickHandler}>{'댓글달기'}</div>)}
               </div>
             </div>
           </div>
