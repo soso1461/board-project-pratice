@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.soo.boardback.dto.request.board.PostBoardRequestDto;
 import com.soo.boardback.dto.response.ResponseDto;
 import com.soo.boardback.dto.response.board.GetBoardResponseDto;
+import com.soo.boardback.dto.response.board.GetCommentListResponseDto;
 import com.soo.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.soo.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.soo.boardback.dto.response.board.PostBoardResponseDto;
@@ -21,8 +22,10 @@ import com.soo.boardback.entity.UserEntity;
 import com.soo.boardback.repository.BoardImageRepository;
 import com.soo.boardback.repository.BoardRepository;
 import com.soo.boardback.repository.BoardViewRepository;
+import com.soo.boardback.repository.CommentRepository;
 import com.soo.boardback.repository.FavoriteRepository;
 import com.soo.boardback.repository.UserRepository;
+import com.soo.boardback.repository.resultSet.CommentListResultSet;
 import com.soo.boardback.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +36,7 @@ public class BoardServiceImplement implements BoardService {
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
     private final FavoriteRepository favoriteRepository;
     private final BoardViewRepository boardViewRepository;
     private final BoardImageRepository boardImageRepository;
@@ -107,6 +111,27 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return GetFavoriteListResponseDto.success(userEntities);
+
+    }
+
+    @Override
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber) {
+
+        List<CommentListResultSet> resultSets = new ArrayList<>();
+
+        try {
+
+            boolean existedBoard = boardRepository.existsByBoardNumber(boardNumber);
+            if (!existedBoard) return GetCommentListResponseDto.notExistBoard();
+
+            resultSets = commentRepository.findByCommentList(boardNumber);
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetCommentListResponseDto.success(resultSets);
 
     }
 
