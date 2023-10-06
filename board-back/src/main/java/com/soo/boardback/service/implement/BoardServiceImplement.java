@@ -7,16 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.soo.boardback.dto.request.board.PostBoardRequestDto;
+import com.soo.boardback.dto.request.board.PostCommentRequestDto;
 import com.soo.boardback.dto.response.ResponseDto;
 import com.soo.boardback.dto.response.board.GetBoardResponseDto;
 import com.soo.boardback.dto.response.board.GetCommentListResponseDto;
 import com.soo.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.soo.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.soo.boardback.dto.response.board.PostBoardResponseDto;
+import com.soo.boardback.dto.response.board.PostCommentResponseDto;
 import com.soo.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.soo.boardback.entity.BoardEntity;
 import com.soo.boardback.entity.BoardImageEntity;
 import com.soo.boardback.entity.BoardViewEntity;
+import com.soo.boardback.entity.CommentEntity;
 import com.soo.boardback.entity.FavoriteEntity;
 import com.soo.boardback.entity.UserEntity;
 import com.soo.boardback.repository.BoardImageRepository;
@@ -69,6 +72,31 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return PostBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber, String email) {
+
+
+
+        try {
+            
+            boolean existedBoard = boardRepository.existsByBoardNumber(boardNumber);
+            if (!existedBoard) return PostCommentResponseDto.notExistBoard();
+
+            boolean existedUser = userRepository.existsByEmail(email);
+            if (!existedUser) return PostCommentResponseDto.notExistUser();
+
+            CommentEntity commentEntity = new CommentEntity(dto, boardNumber, email);
+            commentRepository.save(commentEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PostCommentResponseDto.success();
+
     }
     
     @Override
@@ -179,6 +207,5 @@ public class BoardServiceImplement implements BoardService {
         return PutFavoriteResponseDto.success();
         
     }
-
     
 }
