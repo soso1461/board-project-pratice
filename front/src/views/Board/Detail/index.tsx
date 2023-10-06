@@ -14,6 +14,7 @@ import { GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponse
 import ResponseDto from 'apis/dto/response';
 import { useCookies } from 'react-cookie';
 import PostCommentRequestDto from 'apis/dto/request/board/post-comment.request.dto';
+import dayjs from 'dayjs';
 
 //          component: 게시물 상세보기 페이지          //
 export default function BoardDetail() {
@@ -36,6 +37,13 @@ export default function BoardDetail() {
     const [showMore, setShowMore] = useState<boolean>(false);
     //          state: 게시물 상태          //
     const [board, setBoard] = useState<Board | null>(null);
+
+    //          function: 게시물 작성일 포맷 변경 함수          //
+    const getWriteDatetimeFormat = (writeDatetime: string | undefined) => {
+      if (!writeDatetime) return '';
+      const date = dayjs(writeDatetime);
+      return date.format('YYYY. MM. DD.');
+    };
 
     //          function: get board response 처리 함수          //
     const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto) => {
@@ -96,7 +104,7 @@ export default function BoardDetail() {
               <div className='board-detail-writer-profile-image' style={{ backgroundImage: `url(${DefaultProfileImage})` }}></div>
               <div className='board-detail-writer-nickname' onClick={onNicknameClickHandler}>{board?.writerNickname}</div>
               <div className='board-detail-info-divider'>{'\|'}</div>
-              <div className='board-detail-write-date'>{board?.writeDatetime}</div>
+              <div className='board-detail-write-date'>{getWriteDatetimeFormat(board?.writeDatetime)}</div>
             </div>
             {isWriter && (
             <div className='icon-button' onClick={onMoreButtonClickHandler}>
