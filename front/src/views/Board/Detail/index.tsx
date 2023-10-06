@@ -9,8 +9,8 @@ import { usePagination } from 'hooks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import { BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { getBoardRequest, getFavoriteListRequest, putFavoriteRequest } from 'apis';
-import { GetBoardResponseDto, GetFavoriteListResponseDto } from 'apis/dto/response/board';
+import { getBoardRequest, getCommentListRequest, getFavoriteListRequest, putFavoriteRequest } from 'apis';
+import { GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto } from 'apis/dto/response/board';
 import ResponseDto from 'apis/dto/response';
 import { useCookies } from 'react-cookie';
 
@@ -154,6 +154,17 @@ export default function BoardDetail() {
       const isFavorite = favoriteList.findIndex(item => item.email === user?.email) !== -1;
       setFavorite(isFavorite);
     };    
+    //           function: get comment list response 처리 함수          //
+    const getCommentListResponse = (responseBody: GetCommentListResponseDto | ResponseDto) => {
+      const { code } = responseBody;
+      if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      const { commentList } = responseBody as GetCommentListResponseDto;
+      setBoardList(commentList);
+      setCommentsCount(commentList.length);
+    };
     //           function: put favorite response 처리 함수          //
     const putFavoriteResponse = (code: string) => {
       if (code === 'VF') alert('잘못된 접근입니다.');
@@ -204,9 +215,7 @@ export default function BoardDetail() {
         return;
       }
       getFavoriteListRequest(boardNumber).then(getFavoriteListResponse);
-
-      setBoardList(commentListMock);
-      setCommentsCount(commentListMock.length);
+      getCommentListRequest(boardNumber).then(getCommentListResponse);
     }, [boardNumber]);
 
     //          render: 게시물 상세보기 하단 컴포넌트 렌더링          //
