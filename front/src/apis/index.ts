@@ -4,7 +4,7 @@ import { SignInResponseDto, SignUpResponseDto } from './dto/response/auth';
 import ResponseDto from './dto/response';
 import { GetSignInUserResponseDto, GetUserResponseDto } from './dto/response/user';
 import { PatchBoardRequestDto, PostBoardRequestDto } from './dto/request/board';
-import { PostBoardResponseDto, GetLatestBoardListResponseDto, GetBoardResponseDto, GetFavoriteListResponseDto, PutFavoriteResponseDto, GetCommentListResponseDto, PostCommentResponseDto, PatchBoardResponseDto } from './dto/response/board';
+import { PostBoardResponseDto, GetLatestBoardListResponseDto, GetBoardResponseDto, GetFavoriteListResponseDto, PutFavoriteResponseDto, GetCommentListResponseDto, PostCommentResponseDto, PatchBoardResponseDto, DeleteBoardResponseDto, GetUserBoardListResponseDto } from './dto/response/board';
 import PostCommentRequestDto from './dto/request/board/post-comment.request.dto';
 
 // description: Domain URL //
@@ -57,12 +57,13 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 const GET_BOARD_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}`
 // description: get favorite list API end point //
 const GET_FAVORITE_LIST_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
-
 // description: get comment list API end point //
 const GET_COMMENT_LIST_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}/comment-list`;
-
 // description: get latest board list API end point //
 const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/board/latest-list`;
+// description: get user board list API end point //
+const GET_USER_BOARD_LIST_URL = (email: string) => `${API_DOMAIN}/board/user-board-list/${email}`;
+
 // description: post board API end point //
 const POST_BOARD_URL = () => `${API_DOMAIN}/board`;
 
@@ -73,6 +74,8 @@ const POST_COMMENT_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/
 const PUT_FAVORITE_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
 // description: patch board API end point //
 const PATCH_BOARD_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}`;
+// description: delete board API end point //
+const DELETE_BOARD_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}`;
 
 // description: get board request //
 export const getBoardRequest = async (boardNumber: string | number) => {
@@ -121,6 +124,19 @@ export const getLatestBoardListRequest = async () => {
     const result = await axios.get(GET_LATEST_BOARD_LIST_URL())
         .then(response => {
             const responseBody: GetLatestBoardListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+};
+
+export const getUserBoardListRequest = async (email: string) => {
+    const result = await axios.get(GET_USER_BOARD_LIST_URL(email))
+        .then(response => {
+            const responseBody: GetUserBoardListResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -193,6 +209,22 @@ export const patchBoardRequest = async (requestBody: PatchBoardRequestDto, board
         });
     return result;
 };
+
+// description: delete board request //
+export const deleteBoardRequest = async (boardNumber: string | number, token: string) => {
+    const result = await axios.delete(DELETE_BOARD_URL(boardNumber), authorization(token))
+        .then(response => {
+            const responseBody: DeleteBoardResponseDto = response.data;
+            const { code } = responseBody;
+            return code;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            const { code } = responseBody;
+            return code;
+        });
+    return result;
+}
 
 // description: get sign in user API end point //
 const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;

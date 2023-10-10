@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.soo.boardback.dto.request.board.PatchBoardRequestDto;
 import com.soo.boardback.dto.request.board.PostBoardRequestDto;
 import com.soo.boardback.dto.request.board.PostCommentRequestDto;
+import com.soo.boardback.dto.response.board.DeleteBoardResponseDto;
 import com.soo.boardback.dto.response.board.GetBoardResponseDto;
 import com.soo.boardback.dto.response.board.GetCommentListResponseDto;
 import com.soo.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.soo.boardback.dto.response.board.GetLatestBoardListResponseDto;
+import com.soo.boardback.dto.response.board.GetUserBoardListResponseDto;
 import com.soo.boardback.dto.response.board.PatchBoardResponseDto;
 import com.soo.boardback.dto.response.board.PostBoardResponseDto;
 import com.soo.boardback.dto.response.board.PostCommentResponseDto;
@@ -65,6 +68,14 @@ public class BoardController {
         return response;
     }
 
+    @GetMapping("/user-board-list/{email}")
+    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(
+        @PathVariable("email") String email
+    ) {
+        ResponseEntity<? super GetUserBoardListResponseDto> response = boardService.getUserBoardList(email);
+        return response;
+    }
+
     @PostMapping("")
     public ResponseEntity<? super PostBoardResponseDto> postBoard(
         @RequestBody @Valid PostBoardRequestDto requestBody,
@@ -102,5 +113,13 @@ public class BoardController {
         ResponseEntity<? super PatchBoardResponseDto> response = boardService.patchBoard(requestBody, boardNumber, email);
         return response;
     }
-    
+
+    @DeleteMapping("/{boardNumber}")
+    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(
+        @PathVariable("boardNumber") Integer boardNumber,
+        @AuthenticationPrincipal String email
+    ) {
+        ResponseEntity<? super DeleteBoardResponseDto> response = boardService.deleteBoard(boardNumber, email);
+        return response;
+    }
 }
