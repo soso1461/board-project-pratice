@@ -9,7 +9,7 @@ import { usePagination } from 'hooks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import { AUTH_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { deleteBoardRequest, getBoardRequest, getCommentListRequest, getFavoriteListRequest, postCommentRequest, putFavoriteRequest } from 'apis';
+import { deleteBoardRequest, getBoardRequest, getCommentListRequest, getFavoriteListRequest, increaseViewCountRequest, postCommentRequest, putFavoriteRequest } from 'apis';
 import { GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto } from 'apis/dto/response/board';
 import ResponseDto from 'apis/dto/response';
 import { useCookies } from 'react-cookie';
@@ -28,6 +28,12 @@ export default function BoardDetail() {
   
   //          function: 네비게이트 함수          //
   const navigator = useNavigate();
+
+  //          function: increase view count response 처리 함수          //
+  const increaseViewCountResponse = (code: string) => {
+    if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+  };
   
   //          component: 게시물 상세보기 상단 컴포넌트          //
   const BoardDetailTop = () => {
@@ -108,7 +114,7 @@ export default function BoardDetail() {
         return;
       }
       getBoardRequest(boardNumber).then(getBoardResponse);
-    }, [boardNumber]);
+    }, []);
 
     //          render: 게시물 상세보기 상단 컴포넌트 렌더링          //
     return (
@@ -345,6 +351,20 @@ export default function BoardDetail() {
       </div>
     )
   }
+
+  //          effect: 첫 렌더시 실행할 함수          //
+  let effectFlag = true;
+  useEffect(() => {
+
+    if (effectFlag) {
+      effectFlag = false;
+      return;
+    }
+
+    if (!boardNumber) return;
+    increaseViewCountRequest(boardNumber).then(increaseViewCountResponse);
+
+  }, []);
 
   //          render: 게시물 상세보기 페이지 렌더링          //
   return (

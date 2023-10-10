@@ -4,7 +4,7 @@ import { SignInResponseDto, SignUpResponseDto } from './dto/response/auth';
 import ResponseDto from './dto/response';
 import { GetSignInUserResponseDto, GetUserResponseDto } from './dto/response/user';
 import { PatchBoardRequestDto, PostBoardRequestDto } from './dto/request/board';
-import { PostBoardResponseDto, GetLatestBoardListResponseDto, GetBoardResponseDto, GetFavoriteListResponseDto, PutFavoriteResponseDto, GetCommentListResponseDto, PostCommentResponseDto, PatchBoardResponseDto, DeleteBoardResponseDto, GetUserBoardListResponseDto } from './dto/response/board';
+import { PostBoardResponseDto, GetLatestBoardListResponseDto, GetBoardResponseDto, GetFavoriteListResponseDto, PutFavoriteResponseDto, GetCommentListResponseDto, PostCommentResponseDto, PatchBoardResponseDto, DeleteBoardResponseDto, GetUserBoardListResponseDto, IncreaseViewCountResponseDto } from './dto/response/board';
 import PostCommentRequestDto from './dto/request/board/post-comment.request.dto';
 
 // description: Domain URL //
@@ -74,6 +74,8 @@ const POST_COMMENT_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/
 const PUT_FAVORITE_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}/favorite`;
 // description: patch board API end point //
 const PATCH_BOARD_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}`;
+// description: increase view count API end point //
+const INCREASE_VIEW_COUNT_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/increase-view-count/${boardNumber}`;
 // description: delete board API end point //
 const DELETE_BOARD_URL = (boardNumber: string | number) => `${API_DOMAIN}/board/${boardNumber}`;
 
@@ -209,6 +211,22 @@ export const patchBoardRequest = async (requestBody: PatchBoardRequestDto, board
         });
     return result;
 };
+
+// description: increase view count request //
+export const increaseViewCountRequest = async (boardNumber: string | number) => {
+    const result = await axios.patch(INCREASE_VIEW_COUNT_URL(boardNumber))
+        .then(response => {
+            const responseBody: IncreaseViewCountResponseDto = response.data;
+            const { code } = responseBody;
+            return code;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            const { code } = responseBody;
+            return code;
+        });
+    return result;
+}
 
 // description: delete board request //
 export const deleteBoardRequest = async (boardNumber: string | number, token: string) => {
