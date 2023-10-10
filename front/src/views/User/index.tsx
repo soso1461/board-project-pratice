@@ -8,10 +8,13 @@ import { BoardListItem } from 'types';
 import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { AUTH_PATH, BOARD_WRITE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { getUserBoardListRequest, getUserRequest } from 'apis';
+import { getUserBoardListRequest, getUserRequest, patchNicknameRequest } from 'apis';
 import { GetUserResponseDto } from 'apis/dto/response/user';
 import ResponseDto from 'apis/dto/response';
 import { GetUserBoardListResponseDto } from 'apis/dto/response/board';
+import { useCookies } from 'react-cookie';
+import { PatchBoardRequestDto } from 'apis/dto/request/board';
+import { PatchNicknameRequsetDto } from 'apis/dto/request/user';
 
 //          component: 유저 페이지          //
 export default function User() {
@@ -31,12 +34,16 @@ export default function User() {
 
     //          state: 프로필 이미지 input ref 상태         //
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    //          state: cookie 상태         //
+    const [cookies, setCookie] = useCookies();
     //          state: 이메일 상태         //
     const [email, setEmail] = useState<string>('');
     //          state: 프로필 이미지 상태         //
     const [profileImage, setProfileImage] = useState<string | null>('');
+    //          state: 기존 닉네임 상태         //
+    const [existingNickname, setExistingNickname] = useState<string>('');
     //          state: 닉네임 상태         //
-    const [nickname, setNickname] = useState<string>('나는주코야키');
+    const [nickname, setNickname] = useState<string>('');
     //          state: 닉네임 변경 상태         //
     const [showChangeNickname, setShowChangeNickname] = useState<boolean>(false);
 
@@ -53,8 +60,30 @@ export default function User() {
       const { email, nickname, profileImage } = responseBody as GetUserResponseDto;
       setEmail(email);
       setNickname(nickname);
+      setExistingNickname(nickname);
       setProfileImage(profileImage);
-    }
+    };
+    //          function: patch nickname response 처리 함수         //
+    const patchNicknameResponse = (code: string) => {
+      if (code === 'AF' || code === 'NU') {
+        alert('로그인이 필요합니다.');
+        navigator(AUTH_PATH);
+        return;
+      }
+      if (code === 'VF') alert('빈 값일 수 없습니다.');
+      if (code === 'DN') alert('중복되는 닉네임입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') {
+        setNickname(existingNickname);
+        return;
+      }
+
+      if (!searchEmail) return;
+      getUserRequest(searchEmail).then(getUserResponse);
+      // TODO: 로그인 유저 정보 불러오기 //
+
+      setShowChangeNickname(false);
+    };
 
     //          event handler: 프로필 이미지 클릭 이벤트 처리         //
     const onProfileImageClickHandler = () => {
@@ -65,7 +94,15 @@ export default function User() {
 
     //          event handler: 닉네임 변경 버튼 클릭 이벤트 처리          //
     const onChangeNicknameButtonClickHandler = () => {
-      setShowChangeNickname(!showChangeNickname);
+      if (!showChangeNickname) {
+        setShowChangeNickname(true);
+      }
+
+      const accessToken = cookies.accessToken;
+      if (!accessToken) return;
+
+      const requestBody: PatchNicknameRequsetDto = { nickname };
+      patchNicknameRequest(requestBody, accessToken).then(patchNicknameResponse);
     };
 
     //          event handler: 프로필 이미지 변경 이벤트 처리         //
