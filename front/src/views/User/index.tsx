@@ -8,13 +8,13 @@ import { BoardListItem } from 'types';
 import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { AUTH_PATH, BOARD_WRITE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { getUserBoardListRequest, getUserRequest, patchNicknameRequest } from 'apis';
-import { GetUserResponseDto } from 'apis/dto/response/user';
+import { fileUploadRequest, getSignInUserRequest, getUserBoardListRequest, getUserRequest, patchNicknameRequest, patchProfileImageRequest } from 'apis';
+import { GetSignInUserResponseDto, GetUserResponseDto } from 'apis/dto/response/user';
 import ResponseDto from 'apis/dto/response';
 import { GetUserBoardListResponseDto } from 'apis/dto/response/board';
 import { useCookies } from 'react-cookie';
 import { PatchBoardRequestDto } from 'apis/dto/request/board';
-import { PatchNicknameRequsetDto } from 'apis/dto/request/user';
+import { PatchNicknameRequsetDto, PatchProfileImageRequestDto } from 'apis/dto/request/user';
 
 //          component: 유저 페이지          //
 export default function User() {
@@ -22,7 +22,7 @@ export default function User() {
   //          state: 조회하는 유저 이메일 path variable 상태          //
   const { searchEmail } = useParams();
   //          state: 로그인 유저 정보 상태          //
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   //          state: 본인 여부 상태         //
   const [isMyPage, setMyPage] = useState<boolean>(false);
 
@@ -35,7 +35,7 @@ export default function User() {
     //          state: 프로필 이미지 input ref 상태         //
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     //          state: cookie 상태         //
-    const [cookies, setCookie] = useCookies();
+    const [cookies, setCookies] = useCookies();
     //          state: 이메일 상태         //
     const [email, setEmail] = useState<string>('');
     //          state: 프로필 이미지 상태         //
@@ -77,13 +77,56 @@ export default function User() {
         setNickname(existingNickname);
         return;
       }
-
+      
       if (!searchEmail) return;
       getUserRequest(searchEmail).then(getUserResponse);
+
       // TODO: 로그인 유저 정보 불러오기 //
+      const accessToken = cookies.accessToken;
+      if (!accessToken) return;
+      getSignInUserRequest(accessToken).then(getSignInUserResponse);
 
       setShowChangeNickname(false);
     };
+
+    //          function: file upload response 처리 함수         //
+    const fileUploadResponse = (url: string | null) => {
+      const accessToken = cookies.accessToken;
+      if (!accessToken) return;
+      const requestBody: PatchProfileImageRequestDto = {
+        profileImage: url
+      };
+      patchProfileImageRequest(requestBody, accessToken).then(patchProfileImageResponse);
+    };
+    //          function: patch profile image response 처리 함수         //
+    const patchProfileImageResponse = (code: string) => {
+      if (code === 'NU' || code === 'AF') {
+        navigator(AUTH_PATH);
+        return;
+      }
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      if (!searchEmail) return;
+      getUserRequest(searchEmail).then(getUserResponse);
+
+      const accessToken = cookies.accessToken;
+      if (!accessToken) return;
+      getSignInUserRequest(accessToken).then(getSignInUserResponse);
+    };
+
+    //            function: get sign in user response 처리 함수         //
+    const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto) => {
+      const { code } = responseBody;
+
+      if (code !== 'SU') {
+        setCookies('accessToken', '', { expires: new Date(), path: MAIN_PATH });
+        setUser(null);
+        return;
+      }
+
+      setUser({ ...responseBody as GetSignInUserResponseDto });
+    }
 
     //          event handler: 프로필 이미지 클릭 이벤트 처리         //
     const onProfileImageClickHandler = () => {
@@ -115,8 +158,10 @@ export default function User() {
     //          event handler: 프로필 이미지 변경 이벤트 처리         //
     const onProfileImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       if (!event.target.files || !event.target.files.length) return;
-      const imageUrl = URL.createObjectURL(event.target.files[0]);
-      setProfileImage(imageUrl);
+      const file = event.target.files[0];
+      const data = new FormData();
+      data.append('file', file);
+      fileUploadRequest(data).then(fileUploadResponse);
     };
 
     //          event handler: 닉네임 변경 이벤트 처리          //

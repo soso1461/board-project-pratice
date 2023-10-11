@@ -2,11 +2,11 @@ import axios from 'axios';
 import { SignInRequestDto, SignUpRequestDto } from './dto/request/auth';
 import { SignInResponseDto, SignUpResponseDto } from './dto/response/auth';
 import ResponseDto from './dto/response';
-import { GetSignInUserResponseDto, GetUserResponseDto, PatchNicknameResponseDto } from './dto/response/user';
+import { GetSignInUserResponseDto, GetUserResponseDto, PatchNicknameResponseDto, PatchProfileImageResponseDto } from './dto/response/user';
 import { PatchBoardRequestDto, PostBoardRequestDto } from './dto/request/board';
 import { PostBoardResponseDto, GetLatestBoardListResponseDto, GetBoardResponseDto, GetFavoriteListResponseDto, PutFavoriteResponseDto, GetCommentListResponseDto, PostCommentResponseDto, PatchBoardResponseDto, DeleteBoardResponseDto, GetUserBoardListResponseDto, IncreaseViewCountResponseDto } from './dto/response/board';
 import PostCommentRequestDto from './dto/request/board/post-comment.request.dto';
-import { PatchNicknameRequsetDto } from './dto/request/user';
+import { PatchNicknameRequsetDto, PatchProfileImageRequestDto } from './dto/request/user';
 
 // description: Domain URL //
 const DOMAIN = 'http://localhost:4000';
@@ -251,6 +251,8 @@ const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
 const GET_USER_URL = (email: string) => `${API_DOMAIN}/user/${email}`;
 // description: patch nickname API end point //
 const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
+// description: patch profile image API end point //
+const PATCH_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/profile-image`;
 
 // description: get sign in user request //
 export const getSignInUserRequest = async (token: string) => {
@@ -287,6 +289,22 @@ export const patchNicknameRequest = async (requestBody: PatchNicknameRequsetDto,
         .then(response => {
             const responseBody: PatchNicknameResponseDto = response.data;
             const { code } = responseBody;
+            return code;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            const { code } = responseBody;
+            return code;
+        });
+    return result;
+}
+
+// description: patch profile image request //
+export const patchProfileImageRequest = async (requestBody: PatchProfileImageRequestDto, token: string) => {
+    const result = await axios.patch(PATCH_PROFILE_IMAGE_URL(), requestBody, authorization(token))
+        .then(response => {
+            const responseBody: PatchProfileImageResponseDto = response.data;
+            const { code } = responseBody
             return code;
         })
         .catch(error => {
