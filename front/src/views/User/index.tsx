@@ -96,6 +96,13 @@ export default function User() {
     const onChangeNicknameButtonClickHandler = () => {
       if (!showChangeNickname) {
         setShowChangeNickname(true);
+        return;
+      }
+
+      const isEqual = nickname === existingNickname;
+      if (isEqual) {
+        setShowChangeNickname(false);
+        return;
       }
 
       const accessToken = cookies.accessToken;
