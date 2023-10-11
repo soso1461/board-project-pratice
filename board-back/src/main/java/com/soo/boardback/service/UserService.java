@@ -3,9 +3,11 @@ package com.soo.boardback.service;
 import org.springframework.http.ResponseEntity;
 
 import com.soo.boardback.dto.request.user.PatchNicknameRequestDto;
+import com.soo.boardback.dto.request.user.PatchProfileImageRequestDto;
 import com.soo.boardback.dto.response.user.GetSignInUserResponseDto;
 import com.soo.boardback.dto.response.user.GetUserResponseDto;
 import com.soo.boardback.dto.response.user.PatchNicknameResponseDto;
+import com.soo.boardback.dto.response.user.PatchProfileImageResponseDto;
 
 public interface UserService {
 
@@ -13,5 +15,6 @@ public interface UserService {
     ResponseEntity<? super GetUserResponseDto> getUser(String email);
 
     ResponseEntity<? super PatchNicknameResponseDto> patchNickname(PatchNicknameRequestDto dto, String email);
+    ResponseEntity<? super PatchProfileImageResponseDto> patchProfileImage(PatchProfileImageRequestDto dto, String email);
     
 }
