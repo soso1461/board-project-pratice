@@ -7,6 +7,9 @@ import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { SEARCH_PATH } from 'constant';
 import { BoardListItem } from 'types';
+import { getSearchBoardListRequest } from 'apis';
+import { GetSearchBoardListResponseDto } from 'apis/dto/response/board';
+import ResponseDto from 'apis/dto/response';
 
 
 //          component: 검색 페이지          //
@@ -21,9 +24,24 @@ export default function Search() {
   const [count, setCount] = useState<number>(0);
   //          state: 연관 검색어 리스트 상태          //
   const [relationWordList, setRelationWordList] = useState<string[]>([]);
+  //          state: 이전 검색어 상태          //
+  const [preSearchWord, setPreSearchWord] = useState<string | undefined>(undefined);
+  //          state: effect flag 상태          //
+  const [effectFlag, setEffectFlag] = useState<boolean>(true);
 
   //          function: 네비게이트 함수          //
   const navigator = useNavigate();
+  //          function: get search board list response 처리 함수          //
+  const getSearchBoardListResponse = (responseBody: GetSearchBoardListResponseDto | ResponseDto) => {
+    const { code } = responseBody;
+    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+    if (code !== 'SU') return;
+
+    const { searchList } = responseBody as GetSearchBoardListResponseDto;
+    setBoardList(searchList);
+    setCount(searchList.length);
+    setPreSearchWord(word);
+  };
 
   //          event handler: 관련 검색어 뱃지 클릭 이벤트 처리          //
   const onWordBadgeClickHandler = (word: string) => {
@@ -32,10 +50,12 @@ export default function Search() {
 
   //          effect: 'word' path variable이 변경될 때 마다 검색 결과 불러오기          //
   useEffect(() => {
+    if (effectFlag) {
+      setEffectFlag(false);
+      return;
+    }
     if (!word) return;
-    const boardList = searchListMock(word);
-    setBoardList(boardList);
-    setCount(boardList.length);
+    getSearchBoardListRequest(word, preSearchWord).then(getSearchBoardListResponse);
     setRelationWordList(relationWordListMock);
   }, [word]);
 
