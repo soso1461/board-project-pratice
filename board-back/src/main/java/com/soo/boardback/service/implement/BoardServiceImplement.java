@@ -251,7 +251,7 @@ public class BoardServiceImplement implements BoardService {
 
             boolean relation = preSearchWord != null;
 
-            SearchLogEntity searchLogEntity = new SearchLogEntity(searchWord, preSearchWord, relation);
+            SearchLogEntity searchLogEntity = new SearchLogEntity(searchWord, preSearchWord, false);
             searchLogRepository.save(searchLogEntity);
 
             if (relation) {

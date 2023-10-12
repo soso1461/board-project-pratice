@@ -8,10 +8,11 @@ import { SEARCH_PATH } from 'constant';
 import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { usePagination } from 'hooks';
-import { GetTop3BoardListRequest, getLatestBoardListRequest } from 'apis';
+import { GetTop3BoardListRequest, getLatestBoardListRequest, getPopularListRequest } from 'apis';
 import GetLatestBoardListResponseDto from 'apis/dto/response/board/get-latest-board-list.response.dto';
 import ResponseDto from 'apis/dto/response';
 import { GetTop3BoardListResponseDto } from 'apis/dto/response/board';
+import { GetPopularListResponseDto } from 'apis/dto/response/search';
 
 //          component: 메인 페이지          //
 export default function Main() {
@@ -62,6 +63,16 @@ export default function Main() {
     //          function: 네비게이트 함수          //
     const navagator = useNavigate();
 
+    //          function: get popular list response 처리 함수          //
+    const getPopularListResponse = (responseBody: GetPopularListResponseDto | ResponseDto) => {
+      const { code } = responseBody;
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      const { popularWordList } = responseBody as GetPopularListResponseDto;
+      setPopularWordList(popularWordList);
+    }
+
     //          function: get latest board list response 처리 함수          //
     const getLatestBoardListResponse = (responseBody: GetLatestBoardListResponseDto | ResponseDto) => {
       const { code } = responseBody;
@@ -79,8 +90,7 @@ export default function Main() {
 
     //          effect: 컴포넌트 마운트 시 실행할 함수          //
     useEffect(() => {
-      // TODO: API 호출로 변경
-      setPopularWordList(popularWordListMock);
+      getPopularListRequest().then(getPopularListResponse);
       getLatestBoardListRequest().then(getLatestBoardListResponse);
     }, []);
 
