@@ -8,7 +8,7 @@ import { SEARCH_PATH } from 'constant';
 import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { usePagination } from 'hooks';
-import { GetTop3BoardListRequest, getLatestBoardListRequest, getPopularListRequest } from 'apis';
+import { getTop3BoardListRequest, getLatestBoardListRequest, getPopularListRequest } from 'apis';
 import GetLatestBoardListResponseDto from 'apis/dto/response/board/get-latest-board-list.response.dto';
 import ResponseDto from 'apis/dto/response';
 import { GetTop3BoardListResponseDto } from 'apis/dto/response/board';
@@ -35,7 +35,7 @@ export default function Main() {
 
     //          effect: 컴포넌트 마운트 시 top3 리스트 불러오기          //
     useEffect(() => {
-      GetTop3BoardListRequest().then(getTop3BoardListResponse);
+      getTop3BoardListRequest().then(getTop3BoardListResponse);
     }, []);
 
     //          render: 메인 상단 컴포넌트 렌더링          //

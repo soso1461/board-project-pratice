@@ -7,9 +7,10 @@ import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { SEARCH_PATH } from 'constant';
 import { BoardListItem } from 'types';
-import { getSearchBoardListRequest } from 'apis';
+import { getRelationListRequest, getSearchBoardListRequest } from 'apis';
 import { GetSearchBoardListResponseDto } from 'apis/dto/response/board';
 import ResponseDto from 'apis/dto/response';
+import { GetRelationListResponseDto } from 'apis/dto/response/search';
 
 
 //          component: 검색 페이지          //
@@ -36,13 +37,22 @@ export default function Search() {
     const { code } = responseBody;
     if (code === 'DBE') alert('데이터베이스 오류입니다.');
     if (code !== 'SU') return;
-
+    
     const { searchList } = responseBody as GetSearchBoardListResponseDto;
     setBoardList(searchList);
     setCount(searchList.length);
     setPreSearchWord(word);
   };
+  //          function: get relation list response 처리 함수          //
+  const getRelationListResponse = (responseBody: GetRelationListResponseDto | ResponseDto) => {
+    const { code } = responseBody;
+    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+    if (code !== 'SU') return;
 
+    const { relativeWordList } = responseBody as GetRelationListResponseDto;
+    setRelationWordList(relativeWordList);
+  };
+  
   //          event handler: 관련 검색어 뱃지 클릭 이벤트 처리          //
   const onWordBadgeClickHandler = (word: string) => {
     navigator(SEARCH_PATH(word));
@@ -56,7 +66,7 @@ export default function Search() {
     }
     if (!word) return;
     getSearchBoardListRequest(word, preSearchWord).then(getSearchBoardListResponse);
-    setRelationWordList(relationWordListMock);
+    getRelationListRequest(word).then(getRelationListResponse);
   }, [word, effectFlag]);
 
   //          render: 검색 페이지 렌더링          //
